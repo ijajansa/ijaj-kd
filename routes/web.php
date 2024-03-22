@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/', function () {
+Route::get('/admin', function () {
     return view('auth.login');
+});
+Route::get('/', function () {
+    return redirect('login');
 });
 
 Route::get('/migrate', function () {
@@ -23,6 +26,8 @@ Route::get('/migrate', function () {
     \Artisan::call('migrate');
     return redirect()->back();
 });
+Route::post('user-login', [App\Http\Controllers\Auth\LoginController::class, 'userLogin']);
+
 
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

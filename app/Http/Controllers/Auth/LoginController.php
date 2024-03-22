@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Category;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -36,5 +38,21 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+    public function showLoginForm()
+    {
+        $categories = Category::where('is_active',1)->orderBy('name','ASC')->get();
+        return view('auth.user-login',compact('categories'));
+    }
+
+    public function userLogin(Request $request)
+    {
+        $request->validate([
+            'email'=> 'required|email',
+            'password'=> 'required',
+            'category_id'=> 'required',
+        ],[
+            'category_id.required' => 'The category field is required.'            
+        ]);
     }
 }
