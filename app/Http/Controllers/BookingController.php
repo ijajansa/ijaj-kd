@@ -1,19 +1,34 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\Customer;
-use App\Models\Report;
-use App\Models\Bar;
-use App\Models\HajeriShed;
-use App\Models\Ward;
-
-use App\Exports\UsersExport;
-use Illuminate\Http\Request;
 use Config;
 use DataTables;
+use App\Models\Bar;
+use App\Models\Ward;
+use App\Models\Report;
+
+use App\Models\Category;
+use App\Models\Customer;
+use App\Models\HajeriShed;
+use App\Exports\UsersExport;
+use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
+
+    public function getCategories(Request $request)
+    {
+        $categories = Category::where('is_active',1)->orderBy('name','ASC')->get();
+        if($categories)
+        {
+            return response()->json(['success'=>true,'message'=>'Found', 'categories' => $categories]);
+        }
+        else
+        {
+            return response()->json(['success'=>false,'message'=>'Not Found']);
+        }
+    }
+
     public function getReportRecord(Request $request)
     {
         $data=Report::where('barcode_id',$request->barcode_id)->whereDate('created_at',date('Y-m-d'))->first();

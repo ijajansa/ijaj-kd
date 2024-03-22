@@ -19,6 +19,7 @@ Route::get('/', function () {
 });
 
 Route::get('/migrate', function () {
+    \Artisan::call('optimize:clear');
     \Artisan::call('migrate');
     return redirect()->back();
 });

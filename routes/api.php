@@ -34,6 +34,7 @@ Route::post('postLogin', 'CustomerController@postLogin');
 Route::post('addReport', 'BookingController@addReport');
 Route::post('updateRemark', 'BookingController@updateRemark');
 Route::post('getUserProfile', 'BookingController@getUserProfile');
+Route::post('getCategories', 'BookingController@getCategories');
 
 Route::post('getReportRecord', 'BookingController@getReportRecord');
 Route::post('addFirebaseToken', 'OrderController@addFirebaseToken');
