@@ -54,5 +54,7 @@ class LoginController extends Controller
         ],[
             'category_id.required' => 'The category field is required.'            
         ]);
+        $data = $request->all();
+        dd($data);
     }
 }
