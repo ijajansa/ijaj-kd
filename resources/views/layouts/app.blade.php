@@ -137,7 +137,7 @@
 <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-messaging.js"></script>
 <script src="assets/plugins/select2/js/select2.min.js"></script>
 
-<script>
+{{-- <script>
     var firebaseConfig = {
     apiKey: "AIzaSyA1VolvVtHDeg0b1VyRcRoXKwQfNeMOfYM",
     authDomain: "triple-brook-270004.firebaseapp.com",
@@ -206,7 +206,7 @@
             })
     })
     IntitalizeFireBaseMessaging();
-</script>
+</script> --}}
 
 </body>
 

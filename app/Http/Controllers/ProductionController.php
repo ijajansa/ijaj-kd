@@ -134,34 +134,5 @@ class ProductionController extends Controller
         return redirect()->back();
     }
 
-public function sendNotification($token,$request,$data)
-{
-    // dd($token);
-    $url ="https://fcm.googleapis.com/fcm/send";
-        $fields=array(
-            "to"=>$token->push_token,
-            "notification"=>array(
-                "body"=>$request->check_roll." Checking Rolls For ".$data->order->customer->customer_name,
-                "title"=>"DSP Production Department",
-                "icon"=>"https://dsptechnologies.co.in/assets/title.png",
-                "click_action"=>"http://localhost/backend/"
-            )
-        );
-       
-        $headers=array(
-            'Authorization: key=AAAAhMqZQiw:APA91bEfIL_iV_MkBdpqEeekyl6T4e0WZPYN8gk-VbjRCJ3j6I_gpsAu3sJEWqBeWT9gTeQvEjvWjTesYvYdPsluceo5XPFx7EBhF13FEnaOWVucBAYUm6-XWINjtCBlUxr9Me6QXLW_',
-            'Content-Type:application/json'
-        );
-
-        $ch=curl_init();
-        curl_setopt($ch,CURLOPT_URL,$url);
-        curl_setopt($ch,CURLOPT_POST,true);
-        curl_setopt($ch,CURLOPT_HTTPHEADER,$headers);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
-        curl_setopt($ch,CURLOPT_POSTFIELDS,json_encode($fields));
-        $result=curl_exec($ch);
-        // print_r($result);
-        curl_close($ch);
-}
 
 }
