@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Customer;
+use App\Models\Material;
+use App\Models\Order;
+use App\Models\ProductType;
+use Auth;
+use Illuminate\Http\Request;
+
+class OrderController extends Controller {
+	public function searchMaterial(Request $request) {
+		if ($request->name != null) {
+			$data = Material::where('our_product_code', 'like', '%'.$request->name.'%')->get();
+		}
+		return $data;
+	}
+
+	public function searchCompanies(Request $request) {
+		if ($request->name != null) {
+			$data = Customer::where('customer_name', 'like', '%'.$request->name.'%')->get();
+		}
+		return $data;
+	}
+
+	public function allOrderData() {
+		$order = Order::orderBy('order_id', 'DESC')->get();
+		return view('order.all')->with('order', $order);
+	}
+
+	public function addOrderPage() {
+		$product_type = ProductType::orderBy('name', 'ASC')->get();
+		return view('order.add')->with('product_type', $product_type);
+	}
+	public function addOrderData(Request $request) {
+		$order = Order::where('po_number', $request->ponumber)->exists();
+		if (!$order) {
+			date_default_timezone_set("Asia/Calcutta");
+			$order                          = new Order();
+			$order->customer_name           = $request->customer_id;
+			$order->customer_email          = $request->email;
+			$order->customer_contact_number = $request->customer_contact_number;
+			$order->product_type            = $request->product_type;
+			$order->label_size              = $request->label_size;
+			$order->label_type1             = $request->label_type1;
+			$order->label_size1             = $request->label_size1;
+			$order->label_type2             = $request->label_type2;
+			$order->label_across            = $request->label_across;
+			$order->core_size               = $request->core_size;
+			$order->each_label_qty          = $request->each_label_qty;
+			$order->material                = $request->material_id;
+			$order->quantity                = $request->total_qty;
+			$order->rolls                   = $request->roll;
+			$order->order_status            = 1;
+			$order->order_written_by        = Auth::user()->name;
+			$order->po_number               = $request->ponumber;
+			$order->po_date                 = $request->podate;
+			$order->save();
+			$notification = array(
+				'message'    => 'New Order Registered Successfully !',
+				'alert-type' => 'success'
+			);
+			return redirect('order/all')->with($notification);
+		} else {
+			$notification = array(
+				'message'    => 'P.O. Number Must Be Unique !',
+				'alert-type' => 'error'
+			);
+			return redirect()->back()->with($notification);
+		}
+
+	}
+
+	public function editOrderPage($id) {
+		$order        = Order::with('type')->where('order_id', $id)->first();
+		$product_type = ProductType::get();
+		return view('order.edit')->with('order', $order)->with('product_type', $product_type);
+	}
+
+	public function editOrderData(Request $request, $id) {
+		$order                          = Order::where('order_id', $id)->first();
+		$order->customer_name           = $request->customer_id;
+		$order->customer_email          = $request->email;
+		$order->customer_contact_number = $request->customer_contact_number;
+		$order->product_type            = $request->product_type;
+		$order->label_size              = $request->label_size;
+		$order->label_type1             = $request->label_type1;
+		$order->label_size1             = $request->label_size1;
+		$order->label_type2             = $request->label_type2;
+		$order->label_across            = $request->label_across;
+		$order->core_size               = $request->core_size;
+		$order->each_label_qty          = $request->each_label_qty;
+		$order->material                = $request->material_id;
+		$order->quantity                = $request->total_qty;
+		$order->rolls                   = $request->roll;
+		$order->order_status            = 1;
+		$order->order_written_by        = Auth::user()->name;
+		$order->po_number               = $request->ponumber;
+		$order->po_date                 = $request->podate;
+		$order->save();
+		$notification = array(
+			'message'    => 'Order Details Updated Successfully !',
+			'alert-type' => 'success'
+		);
+		return redirect('order/all')->with($notification);
+	}
+
+	public function deleteOrderData($id) {
+		$order = Order::where('order_id', $id)->where('order_status', 1)->first();
+		$order->delete();
+		return redirect('order/all');
+	}
+
+}

@@ -1,0 +1,275 @@
+@extends('layouts.app')
+@section('content')
+<style type="text/css">
+	#searchDiv,#searchDiv1{
+		position: absolute;
+		width: 97.5%;
+		background: #f9f9f9;
+		border-radius: 4px;
+	}
+	#searchDiv button,#searchDiv1 button{
+		padding: 10px 6px;
+		padding-left: 10px;
+		cursor: pointer;
+		width: 100%;
+		background: none;
+		border: none;
+		text-align: left;
+	}
+	#searchDiv button:hover{
+		background: #f3f3f3;
+		border-radius: 4px;
+	}
+	#searchDiv1 button:hover{
+		background: #f3f3f3;
+		border-radius: 4px;
+	}
+	.redAlert{
+		border:2px solid red;
+	}
+</style>
+<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+
+				<div class="row">
+					<div class="col-xl-12">
+						<div class="card border-top border-0 border-4 border-primary">
+							<div class="card-body p-5">
+								<div class="card-title d-flex align-items-center">
+									<div><i class="bx bx-plus me-1 font-22 text-primary"></i>
+									</div>
+									<h5 class="mb-0 text-primary">New Order</h5>
+								</div>
+								<hr>
+								<form class="row g-3" method="POST" action="{{config('app.baseURL')}}/order/add">
+									@csrf
+									<div class="col-md-6" style="position:relative;">
+										<label for="inputFirstName" class="form-label">Customer Name <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<input type="text" autocomplete="off" name="name" onkeyup="getSearch(this.value)" class="form-control" id="inputFirstName"  required placeholder="Type here to search...">
+										<input type="hidden" name="customer_id" id="customerId">
+										<div id="searchDiv">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<label for="inputFirstName2" class="form-label">Customer Email <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<input type="email" name="email" class="form-control" id="inputFirstName2" required>
+									</div>
+									<div class="col-md-6">
+										<label for="inputFirstName3" class="form-label">Customer Contact Number <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<input type="text" name="customer_contact_number" class="form-control" id="inputFirstName3" minlength="10" maxlength="10" required>
+									</div>
+									<div class="col-md-6">
+										<label for="inputOrderType" class="form-label">Order Type <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<select id="inputOrderType" required name="product_type" class="form-select">
+											<option value="">Select</option>
+											@foreach($product_type as $product)
+											<option value="{{$product->id}}">{{$product->name}}</option>
+											@endforeach
+										</select>
+									</div>
+									<div class="col-md-6">
+										<div class="row">
+											<label for="inputLastName" class="form-label">Label/Ribbon Size <span class="text-danger" style="font-weight: bold;">*</span></label>
+											<div class="col-md-2">
+										<input type="text" class="form-control" id="inputLastName" name="label_size" placeholder="Width" required>
+											</div>
+											<div class="col-md-2">
+										<select class="form-control form-select" name="label_type1">
+											<option value="mm">mm</option>
+											<option value="in">inch</option>
+										</select>
+											</div>
+											<div class="col-md-2">
+										<input type="text" class="form-control" id="inputLastName" name="label_size1" placeholder="Height" required>
+											</div>
+											<div class="col-md-2">
+											<select class="form-control form-select" name="label_type2">
+											<option value="mm">mm</option>
+											<option value="in">inch</option>
+										</select>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<label for="inputLastName" class="form-label">Label Across <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<select class="form-select form-control" name="label_across" required>
+											<option value="">Select</option>
+											<option value="1">1 Up</option>
+											<option value="2">2 Up</option>
+											<option value="3">3 Up</option>
+											<option value="4">4 Up</option>
+											<option value="5">5 Up</option>
+											<option value="6">6 Up</option>
+											<option value="7">7 Up</option>
+											<option value="8">8 Up</option>
+											<option value="9">9 Up</option>
+											<option value="10">10 Up</option>
+										</select>
+									</div>
+									<div class="col-md-6">
+										<label for="inputLastName2" class="form-label">Core Size <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<!-- <input type="text" class="form-control" id="inputLastName2" name="core_size" required> -->
+										<select class="form-select form-control" name="core_size" required>
+											<option value="">Select</option>
+											<option value="1.0">1'0"</option>
+											<option value="1.5">1'5"</option>
+											<option value="3.0">3'0"</option>
+										</select>
+									</div>
+									<div class="col-md-6" style="position:relative;">
+										<label for="inputPassword" class="form-label">Material <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<input type="text" class="form-control" autocomplete="off" id="inputPassword" name="material" onkeyup="getMaterialSearch(this.value)" placeholder="Type to search here..." required>
+										<input type="hidden" name="material_id" id="materialId">
+										<div id="searchDiv1">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<label for="inputEmail" class="form-label">Each Roll Label Quantity <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<input name="each_label_qty" type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control" id="inputEmail" onchange="calculate()" required>
+									</div>
+
+									<div class="col-md-6">
+										<label for="inputEmail2" class="form-label">Total Quantity <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control" id="inputEmail2" name="total_qty" onchange="calculate()" required>
+									</div>
+									<div class="col-md-6">
+										<label for="inputEmail3" class="form-label">Total Rolls <span class="text-danger" style="font-weight: bold;">*</span></label>
+										<input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57" class="form-control" id="inputEmail3" name="roll" required onkeyup="getCol(this.value)">
+											<p style="color:red;font-weight: bold;display: none;margin: 0;padding: 0;margin-top: 10px;">* Please Total Rolls Should Not Be In Points.</p>
+									</div>
+
+									<div class="col-md-6">
+										<label for="inputCity" class="form-label">P.O.Number <span class="text-danger" style="font-weight: bold;">(must be unique) *</span></label>
+										<input type="text" name="ponumber" class="form-control" id="inputCity" required>
+									</div>
+									<div class="col-md-6">
+										<label for="inputState" class="form-label">P.O.Date</label>
+										<input type="date" name="podate" class="form-control" id="inputState">
+									</div>
+
+									<div class="col-12">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="gridCheck" required>
+											<label class="form-check-label" for="gridCheck">Please click the button before submitting the above details</label>
+										</div>
+									</div>
+									<div class="col-12">
+										<button type="submit" class="btn btn-primary px-5">Upload</button>
+									</div>
+								</form>
+							</div>
+						</div>
+
+
+					</div>
+				</div>
+
+				<!--end row-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		<script type="text/javascript">
+			function getSearch(val)
+			{
+				if(val.length!=0)
+				{
+					$.ajax({
+						url: "{{config('app.baseURL')}}/order/getCompanies",
+						type: 'GET',
+						data: {name:val},
+						success:function(data)
+						{
+							$("#searchDiv").empty();
+							$.each(data, function(index, val) {
+							// console.log(val.customer_name);
+							$("#searchDiv").append('<button value="'+val.customer_name+','+val.person_email+','+val.person_contact_number+','+val.id+'" onclick="getName2(this.value)">'+val.customer_name+'</button>');
+							});
+						}
+					});
+				}
+				else
+				{
+					$("#searchDiv").empty();
+				}
+			}
+
+			function getName2(val)
+			{
+				var data = val.split(',');
+				$("#inputFirstName").val(data[0]);
+				$("#inputFirstName2").val(data[1]);
+				$("#inputFirstName3").val(data[2]);
+				$("#customerId").val(data[3]);
+				$("#searchDiv").empty();
+			}
+		</script>
+
+		<script type="text/javascript">
+			function calculate()
+			{
+				val1=$("#inputEmail").val();
+				val2=$("#inputEmail2").val();
+				ans=val2/val1;
+				$("#inputEmail3").val(ans);
+				if(ans%1!=0)
+				{
+					// setTimeout(function(){
+					// 	$("#inputEmail2").val("");
+			  //       },3000);
+					$("p").show();
+					$("#inputEmail2").addClass('redAlert');
+				}
+				else
+				{
+					$("p").hide();
+
+				}
+			}
+
+
+			function getCol(val12){
+				val11=$("#inputEmail").val();
+				ansa=val11*val12;
+				$("#inputEmail2").val(ansa);
+				$("#inputEmail2").removeClass('redAlert');
+			}
+
+
+			function getMaterialSearch(name)
+			{
+				if(name.length!=0)
+				{
+					$.ajax({
+						url: "{{config('app.baseURL')}}/order/getMaterial",
+						type: 'GET',
+						data: {name:name},
+						success:function(data)
+						{
+							$("#searchDiv1").empty();
+							$.each(data, function(index, val) {
+							// console.log(val.customer_name);
+							$("#searchDiv1").append('<button value="'+val.our_product_code+','+val.id+'" onclick="getName3(this.value)">'+val.our_product_code+'</button>');
+							});
+						}
+					});
+				}
+				else
+				{
+					$("#searchDiv1").empty();
+				}
+			}
+
+			function getName3(val)
+			{
+				// alert(name);
+				// console.log(val);
+				var data = val.split(',');
+				$("#inputPassword").val(data[0]);
+				$("#materialId").val(data[1]);
+				$("#searchDiv1").empty();
+			}
+
+		</script>
+@endsection

@@ -1,0 +1,74 @@
+@extends('layouts.app')
+@section('content')
+<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<h6 class="mb-0 text-uppercase" style="display:inline-block;">New Order</h6>
+				<hr/>
+
+				<div class="card">
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="example" class="table table-hover table-striped table-bordered" style="width:100%">
+								<thead>
+									<tr>
+										<th>Sr No.</th>
+										<th>Order Date</th>
+										<th>Order Status</th>
+										<th>Customer Name</th>
+										<th>Email</th>
+										<th>Label/Ribbon Size</th>
+										<th>P.O. Number</th>
+										<th>Written By</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach($order as $key=>$order)
+									<tr>
+										<td>{{++$key}}</td>
+										<td>{{$order->created_at->format('d-m-Y')}}</td>
+										<td>
+
+											@if($order->order_status==1)
+											<div class="badge rounded-pill text-danger bg-light-danger p-2 text-uppercase px-3"><i class='bx bxs-circle align-middle me-1'></i>Pending</div>
+											@elseif($order->order_status==2)
+											<div class="badge rounded-pill text-warning bg-light-warning p-2 text-uppercase px-3"><i class='bx bxs-circle align-middle me-1'></i>Processing</div>
+											@else
+											<div class="badge rounded-pill text-info bg-light-info p-2 text-uppercase px-3"><i class='bx bxs-circle align-middle me-1'></i>Checking</div>
+											@endif
+										</td>
+										<td>{{$order->customer->customer_name}}</td>
+										<td>{{$order->customer_email}}</td>
+										<td>{{$order->label_size}}{{$order->label_type1}} X {{$order->label_size1}}{{$order->label_type2}}</td>
+										<td>{{$order->po_number}}</td>
+										<td>{{$order->order_written_by}}</td>
+
+										<td>
+											<a href="{{config('app.baseURL')}}/production/edit/{{$order->order_id}}"><button type="button" class="btn btn-primary btn-sm  px-4">View Details</button></a>
+										</td>
+									</tr>
+									@endforeach
+								</tbody>
+								<tfoot>
+									<tr>
+										<th>Sr No.</th>
+										<th>Order Date</th>
+										<th>Order Status</th>
+										<th>Customer Name</th>
+										<th>Email</th>
+										<th>Label/Ribbon Size</th>
+										<th>P.O. Number</th>
+										<th>Written By</th>
+										<th>Action</th>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!--end page wrapper -->
+@endsection

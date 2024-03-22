@@ -1,0 +1,136 @@
+@extends('layouts.app')
+@section('content')
+<!--start page wrapper -->
+<div class="page-wrapper">
+	<div class="page-content">
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="card border-top border-0 border-4 border-primary">
+					<div class="card-body p-5">
+						<div class="card-title d-flex align-items-center">
+							<div><i class="bx bx-plus me-1 font-22 text-primary"></i>
+							</div>
+							<h5 class="mb-0 text-primary">Update Raw Material</h5>
+						</div>
+						<hr>
+						<form method="POST" action="{{config('app.baseURL')}}/material/edit/{{$material->id}}" class="row g-3">
+							@csrf
+							<div class="col-4">
+								<label for="inputFirstName" class="form-label">Supplier Product Code <strong style="color:red;">*</strong></label>
+								<input type="text" name="supplier_product_code"  class="form-control" id="inputFirstName" value="{{$material->supplier_product_code}}" required>
+							</div>
+							<div class="col-4">
+								<label for="inputFirstName1" class="form-label">Our Product Code <strong style="color:red;">*</strong></label>
+								<input type="text" name="our_product_code"  class="form-control" id="inputFirstName1" value="{{$material->our_product_code}}" required>
+							</div>
+							<div class="col-12">
+								<button type="button" class="btn btn-primary px-5">Update Product Code</button>
+							</div>
+							<hr>
+						</form>
+					</div>
+
+					<div class="table-responsive" style="padding: 0 3rem 3rem 3rem;">
+						<p align="right" style="margin-top: 10px;">
+							<button class="btn btn-success"><i class="bx bx-plus" style="margin-right:0px;"></i></button>
+						</p>
+						<table id="example" class="table table-hover table-striped table-bordered" style="width:100%">
+							<thead>
+								<tr>
+									<th>Sr.No</th>
+									<th>Added Time</th>
+									<th>Supplier Product Code</th>
+									<th>Our Product Code</th>
+									<th>Label Width (mm)</th>
+									<th>Label Height (running)</th>
+									<th>Square Foot</th>
+									<th>Roll Quantity</th>
+									<th>Action</th>
+								</tr>
+							</thead>
+							<tbody>
+								@if($material->all_material!=null)
+								@foreach($material->all_material as $key=>$material1)
+								<tr>
+									<td>{{++$key}}</td>
+									<td>{{$material1->created_at}}</td>
+									<td><input type="text" class="form-control" value="{{$material1->supplier_product_code}}" name=""> </td>
+									<td><select class="form-control form-select">
+										@foreach($select as $data)
+										<option value="{{$data->id}}" @if($data->id==$material1->material_id) selected @endif>{{$data->our_product_code}}</option>
+										@endforeach
+									</select></td>
+									<td><input type="text" class="form-control" value="{{$material1->width}}" name=""> </td>
+									<td><input type="text" class="form-control" value="{{$material1->height}}" name=""></td>
+									<td><input type="text" class="form-control" value="{{$material1->feet}}" name="" readonly></td>
+									<td><input type="text" class="form-control" value="{{$material1->rolls}}" name=""></td>
+									<td><button type="button" class="btn btn-success">Update</button>&nbsp;
+&nbsp;
+
+										<button type="button" onclick="deleteMaterial({{$material1->id}})" class="btn btn-danger"><i class="bx bx-trash" style="margin-right: 0 !important;font-size: 14px;"></i></button>
+									</td>
+								</tr>
+								@endforeach
+								@endif
+							</tbody>
+							<tfoot>
+								<tr>
+									<th>Sr.No</th>
+									<th>Added Time</th>
+									<th>Supplier Product Code</th>
+									<th>Our Product Code</th>
+									<th>Label Width (mm)</th>
+									<th>Label Height (running)</th>
+									<th>Square Foot</th>
+									<th>Roll Quantity</th>
+									<th>Action</th>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!--end row-->
+		<div class="row">
+
+		</div>
+	</div>
+</div>
+<!--end page wrapper -->
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+	function callCal()
+	{
+		width=$("#inputFirstName3").val();
+		height=$("#inputFirstName4").val();
+		$("#inputFirstName5").val(width*height/1000);
+	}
+
+
+	function deleteMaterial(id)
+	{
+		a=confirm('Are you sure want to delete ?');
+		if(a==true)
+		{
+			$.ajax({
+				url: "{{config('app.baseURL')}}/material/deleteAjaxMaterial",
+				type: 'GET',
+				data: {id:id},
+				success:function(data)
+				{
+					window.location.reload();
+				}
+			});
+		}
+		else
+		{
+			return false;
+		}
+	}
+</script>
+@endsection

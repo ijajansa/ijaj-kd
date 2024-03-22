@@ -1,0 +1,134 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Check;
+use App\Models\CheckingDetail;
+use App\Models\Dispatch;
+use App\Models\Machine;
+use App\Models\Order;
+use App\Models\Production;
+use App\Models\ProductionDetail;
+use App\Models\ProductType;
+use App\Models\User;
+use Auth;
+use Illuminate\Http\Request;
+
+class DispatchController extends Controller {
+	public function markAsCheck($id, Request $request) {
+		dd($request);
+		$data         = Check::where('id', $id)->first();
+		$data->status = 3;
+		$data->save();
+
+		return redirect()->back();
+	}
+	public function getSearchEmployee(Request $request) {
+
+		$data = User::where('name', 'like', '%'.$request->name.'%')->where('role_id', 4)->get();
+		return $data;
+	}
+
+	public function allOrderData() {
+		$order = Check::orderBy('id', 'DESC')->where('status', 3)->with('order')->with('machine')->get();
+		return view('dispatch.all')->with('order', $order);
+	}
+
+	public function acceptData(Request $request) {
+		date_default_timezone_set("Asia/Calcutta");
+		$id = $request->checking_id;
+		foreach ($id as $check) {
+			$chk  = Check::where('id', $check)->where('status', 3)->first();
+			$data = Dispatch::where('customer_id', $chk->customer_id)->where('status', 0)->first();
+			if ($data) {
+				$data->check_roll = $data->check_roll+$chk->check_roll;
+				$data->save();
+
+				$chk->status = 4;
+				$chk->save();
+			} else {
+				$new                = new Dispatch();
+				$new->check_id      = $chk->id;
+				$new->customer_id   = $chk->customer_id;
+				$new->check_roll    = $chk->check_roll;
+				$new->accepted_by   = Auth::user()->id;
+				$new->accepted_date = date('Y-m-d H:i:s');
+				$new->save();
+
+				$chk->status = 4;
+				$chk->save();
+
+			}
+		}
+		dd($id);
+	}
+
+	public function allDispatchOrderData() {
+		$production = Dispatch::with('order')->orderBy('id', 'DESC')->get();
+		return view('dispatch.all-data')->with('production', $production);
+	}
+	public function editProductionPage($id) {
+		$machine      = Machine::all();
+		$order        = Order::with('type')->where('order_id', $id)->first();
+		$product_type = ProductType::where('id', '!=', $order->product_type)->get();
+		return view('checking.edit')->with('order', $order)->with('product_type', $product_type)->with('machine', $machine);
+	}
+
+	public function editProductionData(Request $request) {
+		$production                = new ProductionDetail();
+		$production->machine_id    = $request->machine_id;
+		$production->customer_id   = $request->id;
+		$production->operator_name = $request->operator_name;
+		$production->job_card      = $request->job_card;
+		$production->save();
+		$order               = Order::where('order_id', $request->id)->first();
+		$order->order_status = 2;
+		$order->save();
+		$data                = new Production();
+		$data->production_id = $production->production_id;
+		$data->customer_id   = $request->id;
+		$data->operator_name = $request->operator_name;
+		$data->save();
+		return redirect('checking/all-data');
+
+	}
+
+	public function viewProductionDetailPage($id) {
+
+		$production = ProductionDetail::where('production_id', $id)->with('order')->with('machine')->first();
+		// dd($production);
+		return view('checking.view')->with('production', $production);
+	}
+
+	public function allCheckingData($id) {
+		$detail = Check::where('id', $id)->with('order')->with('machine')->first();
+		$data   = CheckingDetail::where('checking_id', $id)->orderBy('id', 'ASC')->get();
+		// dd($data);
+		return view('checking.view')->with('data', $data)->with('detail', $detail);
+	}
+
+	public function addCheckingData(Request $request) {
+		$data       = Check::where('id', $request->production_id)->first();
+		$production = CheckingDetail::where('checking_id', $request->production_id)->get()->last();
+		if ($data) {
+			$pro              = new CheckingDetail();
+			$pro->checking_id = $data->id;
+			$pro->customer_id = $data->customer_id;
+			$pro->check_roll  = $request->check_roll;
+			$pro->ok_roll     = $request->ok_roll;
+			if ($production) {
+				$pro->total_roll = $production->total_roll+$request->ok_roll;
+			} else {
+				$pro->total_roll = 0+$request->ok_roll;
+			}
+			$pro->operator_name = $request->operator_name;
+			$pro->created_at    = date('Y-m-d H:i:s');
+			$pro->save();
+
+			$data->remaining_roll = $data->remaining_roll-$request->ok_roll;
+			$data->save();
+		}
+		return redirect()->back();
+	}
+
+}

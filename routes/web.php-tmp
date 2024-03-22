@@ -1,0 +1,128 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+ */
+
+Route::get('/',
+function () {
+		return view('auth.login');
+	});
+
+Auth::routes();
+Route::get('/home', [App\Http\Controllers\HomeController::class , 'index'])->name('home');
+
+Route::group(['prefix'              => 'user'], function () {
+		Route::get('token', ['middleware' => 'auth', 'uses' => 'PublicController@addTokenData']);
+	});
+
+Route::group(['prefix'                    => 'employee'], function () {
+		Route::get('all', ['middleware'         => 'auth', 'uses'         => 'PublicController@allEmployeeData']);
+		Route::get('add', ['middleware'         => 'auth', 'uses'         => 'PublicController@addEmployeePage']);
+		Route::post('add', ['middleware'        => 'auth', 'uses'        => 'PublicController@addEmployeeData']);
+		Route::get('delete/{id}', ['middleware' => 'auth', 'uses' => 'PublicController@deleteEmployeeData']);
+		Route::get('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'PublicController@editEmployeePage']);
+		Route::post('edit/{id}', ['middleware'  => 'auth', 'uses'  => 'PublicController@editEmployeeData']);
+	});
+
+Route::group(['prefix'                     => 'order'], function () {
+		Route::get('all', ['middleware'          => 'auth', 'uses'          => 'OrderController@allOrderData']);
+		Route::get('add', ['middleware'          => 'auth', 'uses'          => 'OrderController@addOrderPage']);
+		Route::post('add', ['middleware'         => 'auth', 'uses'         => 'OrderController@addOrderData']);
+		Route::get('delete/{id}', ['middleware'  => 'auth', 'uses'  => 'OrderController@deleteOrderData']);
+		Route::get('edit/{id}', ['middleware'    => 'auth', 'uses'    => 'OrderController@editOrderPage']);
+		Route::post('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'OrderController@editOrderData']);
+		Route::get('getCompanies', ['middleware' => 'auth', 'uses' => 'OrderController@searchCompanies']);
+		Route::get('getMaterial', ['middleware'  => 'auth', 'uses'  => 'OrderController@searchMaterial']);
+
+	});
+
+Route::group(['prefix'                    => 'production'], function () {
+		Route::get('all', ['middleware'         => 'auth', 'uses'         => 'ProductionController@allOrderData']);
+		Route::get('all-data', ['middleware'    => 'auth', 'uses'    => 'ProductionController@allProductionOrderData']);
+		Route::get('add', ['middleware'         => 'auth', 'uses'         => 'ProductionController@addOrderPage']);
+		Route::post('add', ['middleware'        => 'auth', 'uses'        => 'ProductionController@addOrderData']);
+		Route::get('delete/{id}', ['middleware' => 'auth', 'uses' => 'ProductionController@deleteOrderData']);
+		Route::get('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'ProductionController@editProductionPage']);
+		Route::post('edit/{id}', ['middleware'  => 'auth', 'uses'  => 'ProductionController@editProductionData']);
+
+		Route::get('view/{id}', ['middleware'            => 'auth', 'uses'            => 'ProductionController@viewProductionDetailPage']);
+		Route::get('production-view/{id}', ['middleware' => 'auth', 'uses' => 'ProductionController@allProductionData']);
+		Route::get('add-data', ['middleware'             => 'auth', 'uses'             => 'ProductionController@addProductionData']);
+		Route::get('getSearchEmployee', ['middleware'    => 'auth', 'uses'    => 'ProductionController@getSearchEmployee']);
+	});
+
+Route::group(['prefix'                    => 'machine'], function () {
+		Route::get('all', ['middleware'         => 'auth', 'uses'         => 'MachineController@allMachineData']);
+		Route::get('add', ['middleware'         => 'auth', 'uses'         => 'MachineController@addMachinePage']);
+		Route::post('add', ['middleware'        => 'auth', 'uses'        => 'MachineController@addMachineData']);
+		Route::get('delete/{id}', ['middleware' => 'auth', 'uses' => 'MachineController@deleteMachineData']);
+		Route::get('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'MachineController@editMachinePage']);
+		Route::post('edit/{id}', ['middleware'  => 'auth', 'uses'  => 'MachineController@editMachineData']);
+	});
+
+Route::group(['prefix'                    => 'checking'], function () {
+		Route::get('all', ['middleware'         => 'auth', 'uses'         => 'CheckController@allOrderData']);
+		Route::get('accept-data', ['middleware' => 'auth', 'uses' => 'CheckController@acceptData']);
+		Route::get('all-data', ['middleware'    => 'auth', 'uses'    => 'CheckController@allCheckOrderData']);
+		Route::get('add', ['middleware'         => 'auth', 'uses'         => 'CheckController@addOrderPage']);
+		Route::post('add', ['middleware'        => 'auth', 'uses'        => 'CheckController@addOrderData']);
+		Route::get('delete/{id}', ['middleware' => 'auth', 'uses' => 'CheckController@deleteOrderData']);
+		Route::get('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'CheckController@editProductionPage']);
+		Route::post('edit/{id}', ['middleware'  => 'auth', 'uses'  => 'CheckController@editProductionData']);
+
+		Route::get('view/{id}', ['middleware'          => 'auth', 'uses'          => 'CheckController@viewProductionDetailPage']);
+		Route::get('checking-view/{id}', ['middleware' => 'auth', 'uses' => 'CheckController@allCheckingData']);
+		Route::get('add-data', ['middleware'           => 'auth', 'uses'           => 'CheckController@addCheckingData']);
+		Route::get('getSearchEmployee', ['middleware'  => 'auth', 'uses'  => 'CheckController@getSearchEmployee']);
+		Route::post('order-status/{id}', ['middleware' => 'auth', 'uses' => 'CheckController@markAsCheck']);
+
+	});
+
+Route::group(['prefix'                    => 'customer'], function () {
+		Route::get('all', ['middleware'         => 'auth', 'uses'         => 'CustomerController@allCustomerData']);
+		Route::get('add', ['middleware'         => 'auth', 'uses'         => 'CustomerController@addCustomerPage']);
+		Route::post('add', ['middleware'        => 'auth', 'uses'        => 'CustomerController@addCustomerData']);
+		Route::get('delete/{id}', ['middleware' => 'auth', 'uses' => 'CustomerController@deleteCustomerData']);
+		Route::get('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'CustomerController@editCustomerPage']);
+		Route::post('edit/{id}', ['middleware'  => 'auth', 'uses'  => 'CustomerController@editCustomerData']);
+	});
+
+Route::group(['prefix'                    => 'material'], function () {
+		Route::get('all', ['middleware'         => 'auth', 'uses'         => 'MaterialController@allMaterialData']);
+		Route::get('add', ['middleware'         => 'auth', 'uses'         => 'MaterialController@addMaterialPage']);
+		Route::post('add', ['middleware'        => 'auth', 'uses'        => 'MaterialController@addMaterialData']);
+		Route::get('delete/{id}', ['middleware' => 'auth', 'uses' => 'MaterialController@deleteMaterialData']);
+		Route::get('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'MaterialController@editMaterialPage']);
+		Route::post('edit/{id}', ['middleware'  => 'auth', 'uses'  => 'MaterialController@editMaterialData']);
+
+		Route::get('deleteAjaxMaterial', ['middleware' => 'auth', 'uses' => 'MaterialController@deleteAjaxMaterial']);
+
+	});
+
+Route::group(['prefix'                    => 'dispatch'], function () {
+		Route::get('all', ['middleware'         => 'auth', 'uses'         => 'DispatchController@allOrderData']);
+		Route::get('accept-data', ['middleware' => 'auth', 'uses' => 'DispatchController@acceptData']);
+		Route::get('all-data', ['middleware'    => 'auth', 'uses'    => 'DispatchController@allDispatchOrderData']);
+		Route::get('add', ['middleware'         => 'auth', 'uses'         => 'DispatchController@addOrderPage']);
+		Route::post('add', ['middleware'        => 'auth', 'uses'        => 'DispatchController@addOrderData']);
+		Route::get('delete/{id}', ['middleware' => 'auth', 'uses' => 'DispatchController@deleteOrderData']);
+		Route::get('edit/{id}', ['middleware'   => 'auth', 'uses'   => 'DispatchController@editProductionPage']);
+		Route::post('edit/{id}', ['middleware'  => 'auth', 'uses'  => 'DispatchController@editProductionData']);
+
+		Route::get('view/{id}', ['middleware'          => 'auth', 'uses'          => 'DispatchController@viewProductionDetailPage']);
+		Route::get('checking-view/{id}', ['middleware' => 'auth', 'uses' => 'DispatchController@allCheckingData']);
+		Route::get('add-data', ['middleware'           => 'auth', 'uses'           => 'DispatchController@addCheckingData']);
+		Route::get('getSearchEmployee', ['middleware'  => 'auth', 'uses'  => 'DispatchController@getSearchEmployee']);
+		Route::post('order-status/{id}', ['middleware' => 'auth', 'uses' => 'DispatchController@markAsCheck']);
+
+	});
