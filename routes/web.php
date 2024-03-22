@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/migrate', function () {
+    \Artisan::call('migrate');
+});
+
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/dashboard', ['middleware'=>'auth','uses'=>'CustomerController@getDashboard']);
