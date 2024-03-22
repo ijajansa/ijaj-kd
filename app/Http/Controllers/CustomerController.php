@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Customer;
-use App\Models\Bar;
-use App\Models\Report;
-use App\Models\Ward;
-use App\Models\HajeriShed;
-use Carbon\Carbon;
-
-
 use Hash;
+use Carbon\Carbon;
+use App\Models\Bar;
+use App\Models\Ward;
+use App\Models\Report;
+use App\Models\Customer;
+use App\Models\HajeriShed;
+
+
+use App\Models\UserCategory;
+use Illuminate\Http\Request;
+
 class CustomerController extends Controller
 {
 
@@ -44,6 +46,14 @@ class CustomerController extends Controller
         }
         if (!Hash::check($password, $user->password)) {
             return response()->json(['success'=>false, 'message' => 'Invalid Password']);
+        }
+        if($user)
+        {
+            $user_cat = UserCategory::where('user_id',$user->id)->where('category_id',$request->category_id)->first();
+            if(!$user_cat)
+            {
+                return response()->json(['success'=>false, 'message' => 'Invalid Category']);
+            }
         }
         return response()->json(['success'=>true,'message'=>'success', 'user' => $user]);
 
