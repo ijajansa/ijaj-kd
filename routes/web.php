@@ -20,6 +20,7 @@ Route::get('/', function () {
 
 Route::get('/migrate', function () {
     \Artisan::call('migrate');
+    return redirect()->back();
 });
 
 Auth::routes();
