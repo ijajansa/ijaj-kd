@@ -1,10 +1,11 @@
 <?php
 
+use App\Models\Category;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBookingsTable extends Migration
+class CreateCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +14,19 @@ class CreateBookingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('bookings', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('customer_id');
+            $table->string('name');
             $table->integer('is_active')->default(1);
             $table->timestamps();
         });
+        Category::insert([
+            ['name' => 'Spit'],
+            ['name' => 'Toilet'],
+            ['name' => 'Water Kept'],
+            ['name' => 'CHO Waste'],
+            ['name' => 'E-Waste'],
+        ]);
     }
 
     /**
@@ -28,6 +36,6 @@ class CreateBookingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bookings');
+        Schema::dropIfExists('categories');
     }
 }
