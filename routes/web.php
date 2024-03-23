@@ -67,9 +67,8 @@ Route::post('edit/{id}',['middleware'=>'auth','uses'=>'CustomerController@update
 Route::get('view/{id}',['middleware'=>'auth','uses'=>'CustomerController@editEmployeePage']);
 });
 
-Route::resource('admins', 'AdminController')->middleware('auth');
-Route::resource('categories', 'CategoryController')->middleware('auth');
-
+Route::resource('admins', 'AdminController')->middleware(['auth','super.admin']);
+Route::resource('categories', 'CategoryController')->middleware(['auth','super.admin']);
 
 Route::group(['prefix'=>'barcode'],function(){
 Route::get('all',['middleware'=>'auth','uses'=>'OrderController@allBarcode']);

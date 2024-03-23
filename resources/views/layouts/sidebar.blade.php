@@ -18,7 +18,7 @@
                         <div class="menu-title">Dashboard</div>
                     </a>
                 </li>
-                
+                @if(auth()->user()->role_id==1)
                 <li>
                     <a href="{{route('categories.index')}}">
                         <div class="parent-icon"><i class='bx bx-category'></i>
@@ -26,6 +26,7 @@
                         <div class="menu-title">All Category</div>
                     </a>
                 </li>
+                @endif
                 <!-- <li class="menu-label">Details</li>
                 <li>
                     <a href="{{config('app.baseURL')}}/hotel/all">
@@ -95,6 +96,7 @@
                         <div class="menu-title">All Employees</div>
                     </a>
                 </li>
+                @if(auth()->user()->role_id==1)
                 <li>
                     <a href="{{route('admins.index')}}">
                         <div class="parent-icon"><i class='bx bx-user-plus'></i>
@@ -102,6 +104,7 @@
                         <div class="menu-title">All System User</div>
                     </a>
                 </li>
+                @endif
 
                 <li>
                     <a href="{{config('app.baseURL')}}/report/all">
