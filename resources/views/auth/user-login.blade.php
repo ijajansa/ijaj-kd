@@ -31,7 +31,9 @@
                     <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3">
                         <div class="col mx-auto">
 
-                            <div class="card">
+                            <div class="card" style="border: none;
+                            border-radius: 15px;
+                            box-shadow: 1px 1px 10px rgba(0,0,0,0.1);">
                                 <div class="card-body">
                                     <div class="p-4 rounded">
                                         <div class="mb-4 text-center">

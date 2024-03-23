@@ -15,7 +15,14 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/admin', function () {
-    return view('auth.login');
+    if(!auth()->user())
+    {
+        return view('auth.login');
+    }
+    else
+    {
+        return redirect()->back();
+    }
 });
 Route::get('/', function () {
     return redirect('login');
@@ -59,6 +66,9 @@ Route::get('delete/{id}',['middleware'=>'auth','uses'=>'CustomerController@delet
 Route::post('edit/{id}',['middleware'=>'auth','uses'=>'CustomerController@updateEmployeeData']);
 Route::get('view/{id}',['middleware'=>'auth','uses'=>'CustomerController@editEmployeePage']);
 });
+
+Route::resource('admins', 'AdminController')->middleware('auth');
+
 
 Route::group(['prefix'=>'barcode'],function(){
 Route::get('all',['middleware'=>'auth','uses'=>'OrderController@allBarcode']);

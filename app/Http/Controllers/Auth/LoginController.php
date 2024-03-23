@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -48,13 +51,27 @@ class LoginController extends Controller
     public function userLogin(Request $request)
     {
         $request->validate([
-            'email'=> 'required|email',
+            'email'=> 'required|exists:users,email',
             'password'=> 'required',
             'category_id'=> 'required',
         ],[
             'category_id.required' => 'The category field is required.'            
         ]);
-        $data = $request->all();
-        dd($data);
+        $user = User::where('email', $request->email)->where('category_id',$request->category_id)->where('role_id',2)->first();
+        if($user && !Hash::check($request->password, $user->password)) 
+        {
+            return redirect()->back()->withErrors(['password'=> 'Password doest not match'])->withInput();
+        }
+        elseif($user)
+        {
+            Auth::login($user);
+            return redirect('dashboard');
+        }
+        else
+        {
+            return redirect()->back()->withErrors(['email'=> 'The email address not exists.'])->withInput();
+        }
+    
+
     }
 }

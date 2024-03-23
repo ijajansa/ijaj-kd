@@ -87,6 +87,13 @@
                         <div class="menu-title">All Employees</div>
                     </a>
                 </li>
+                <li>
+                    <a href="{{route('admins.index')}}">
+                        <div class="parent-icon"><i class='bx bx-user-plus'></i>
+                        </div>
+                        <div class="menu-title">All System User</div>
+                    </a>
+                </li>
 
                 <li>
                     <a href="{{config('app.baseURL')}}/report/all">

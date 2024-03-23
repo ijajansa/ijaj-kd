@@ -31,7 +31,7 @@ a {
 	top: 0;
 	bottom: 0;
 	left: 0;
-	background: #D7E9FD;
+	background: linear-gradient(45deg,#dee7f1,#f8d0d0);
 	border-right: 0 solid #e4e4e4;
 	z-index: 11;
 	box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%)!important;
@@ -48,7 +48,7 @@ a {
 	bottom: 0;
 	padding: 0 15px;
 	z-index: 5;
-	background: #D7E9FD;
+	/* background: #D7E9FD; */
 	background-clip: padding-box;
 	/*border-bottom: 1px solid #e4e4e4*/
 }
@@ -140,8 +140,8 @@ a {
 	display: -ms-flexbox;
 	display: flex;
 	padding: 10px;
-	/*margin-top: 60px;*/
-	margin-top: 140px;
+	margin-top: 60px;
+	/* margin-top: 140px; */
 	-webkit-box-orient: vertical;
 	-webkit-box-direction: normal;
 	-ms-flex-direction: column;
@@ -180,7 +180,7 @@ a {
 	font-size: 15px;
 	color: #000 !important;
 	outline-width: 0;
-	margin-top: 20px;
+	margin-top: 16px;
 	font-weight: bold;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -229,7 +229,7 @@ a {
 	color: #D7E9FD;
 	text-decoration: none;
 	background: #fff;
-	border-radius: 20px 20px;
+	border-radius: 10px;
 }
 
 .menu-label {
