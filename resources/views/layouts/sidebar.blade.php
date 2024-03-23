@@ -18,6 +18,14 @@
                         <div class="menu-title">Dashboard</div>
                     </a>
                 </li>
+                
+                <li>
+                    <a href="{{route('categories.index')}}">
+                        <div class="parent-icon"><i class='bx bx-category'></i>
+                        </div>
+                        <div class="menu-title">All Category</div>
+                    </a>
+                </li>
                 <!-- <li class="menu-label">Details</li>
                 <li>
                     <a href="{{config('app.baseURL')}}/hotel/all">

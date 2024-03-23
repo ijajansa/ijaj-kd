@@ -68,6 +68,7 @@ Route::get('view/{id}',['middleware'=>'auth','uses'=>'CustomerController@editEmp
 });
 
 Route::resource('admins', 'AdminController')->middleware('auth');
+Route::resource('categories', 'CategoryController')->middleware('auth');
 
 
 Route::group(['prefix'=>'barcode'],function(){
