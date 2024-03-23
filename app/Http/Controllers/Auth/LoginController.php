@@ -58,14 +58,21 @@ class LoginController extends Controller
             'category_id.required' => 'The category field is required.'            
         ]);
         $user = User::where('email', $request->email)->where('category_id',$request->category_id)->where('role_id',2)->first();
-        if($user && !Hash::check($request->password, $user->password)) 
+        if($user) 
         {
-            return redirect()->back()->withErrors(['password'=> 'Password doest not match'])->withInput();
-        }
-        elseif($user)
-        {
-            Auth::login($user);
-            return redirect('dashboard');
+            if($user && $user->is_active== 0)
+            {
+                return redirect()->back()->withErrors(['email'=> 'The account is disabled by admin.'])->withInput();
+            }
+            if(!Hash::check($request->password, $user->password))
+            {
+                return redirect()->back()->withErrors(['password'=> 'Password doest not match'])->withInput();
+            }
+            else
+            {
+                Auth::login($user);
+                return redirect('dashboard');
+            }
         }
         else
         {
