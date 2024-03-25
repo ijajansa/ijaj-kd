@@ -3,7 +3,6 @@ node_modules/
 npm-debug.log
 yarn-error.log
 firebase-messaging-sw.js
-resources/views/order/all.blade.php
 # Laravel 4 specific
 bootstrap/compiled.php
 app/storage/
