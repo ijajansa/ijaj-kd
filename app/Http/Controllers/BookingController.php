@@ -18,7 +18,7 @@ class BookingController extends Controller
 
     public function getCategories(Request $request)
     {
-        $categories = Category::where('is_active',1)->orderBy('name','ASC')->get();
+        $categories = Category::where('is_active',1)->orderBy('name','ASC')->where('type',1)->get();
         if($categories)
         {
             return response()->json(['success'=>true,'message'=>'Found', 'categories' => $categories]);

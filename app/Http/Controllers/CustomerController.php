@@ -41,20 +41,14 @@ class CustomerController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $user = Customer::where('email', '=', $email)->orWhere('mobile_number', '=', $email)->first();
+        $user = Customer::where(function($q) use($email){
+            $q->where('email', '=', $email)->orWhere('mobile_number', '=', $email);
+        })->where('category_id',$request->category_id)->first();
         if (!$user) {
-            return response()->json(['success'=>false, 'message' => 'Invalid Email Address']);
+            return response()->json(['success'=>false, 'message' => 'User not found']);
         }
         if (!Hash::check($password, $user->password)) {
-            return response()->json(['success'=>false, 'message' => 'Invalid Password']);
-        }
-        if($user)
-        {
-            $user_cat = UserCategory::where('user_id',$user->id)->where('category_id',$request->category_id)->first();
-            if(!$user_cat)
-            {
-                return response()->json(['success'=>false, 'message' => 'Invalid Category']);
-            }
+            return response()->json(['success'=>false, 'message' => 'Invalid password']);
         }
         return response()->json(['success'=>true,'message'=>'success', 'user' => $user]);
 
