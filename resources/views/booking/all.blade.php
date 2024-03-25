@@ -42,11 +42,6 @@
 									<input type="text" id="ward" onkeyup="getFirstDate()" class="form-control" placeholder="Ward Name" style="width: 100%;display: inline-block;" value="{{app('request')->input('ward') }}">
 							    </div>
 
-							    <!-- <div class="col-lg-3" style="margin-top: 20px;">
-							    	<label>Hajeri Shed</label>
-									<input type="text" id="shed" onkeyup="getFirstDate()" class="form-control" placeholder="Hajeri Shed" style="width: 100%;display: inline-block;" value="{{app('request')->input('shed') }}">
-							    </div>
- -->
 							    <div class="col-lg-3" style="margin-top: 20px;">
 							    	<label>Area Name</label>
 									<input type="text" id="area" onkeyup="getFirstDate()" class="form-control" placeholder="Area Name" style="width: 100%;display: inline-block;" value="{{app('request')->input('area') }}">

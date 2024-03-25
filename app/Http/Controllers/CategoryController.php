@@ -38,9 +38,11 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name'=>'required',
+            'type'=>'required',
         ]);
         $user = new Category();
         $user->name = $request->name ?? null;
+        $user->type = $request->type ?? null;
         $user->save();
         $notification = array(
             'message' => 'Category added successfully',
@@ -82,10 +84,12 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'=>'required'
+            'name'=>'required',
+            'type'=>'required',
         ]);
         $category = Category::find($id);
         $category->name = $request->name ?? null;
+        $category->type = $request->type ?? null;
         $category->is_active = $request->is_active ?? null;
         $category->save();
         $notification = array(

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Bar;
-use App\Models\HajeriShed;
-use App\Models\Ward;
-use Picqer\Barcode\BarcodeGeneratorPNG;
 use Auth;
 use Storage;
+use App\Models\Bar;
+use App\Models\User;
+use App\Models\Ward;
+use App\Models\HajeriShed;
+use Illuminate\Http\Request;
+use Picqer\Barcode\BarcodeGeneratorPNG;
+
 class OrderController extends Controller
 {
 
@@ -28,6 +30,16 @@ class OrderController extends Controller
         }
         return $html;
     }
+    public function getWards(Request $request)
+    {
+        $html='';
+        $data=Ward::where('user_id',$request->id)->where('is_active',1)->get();
+        $html.='<option value="">Select</option>';
+        foreach ($data as $key => $value) {
+            $html.='<option value='.$value->id.'>'.$value->name.'</option>';
+        }
+        return $html;
+    }
 
     public function printBarcode($id)
     {
@@ -37,14 +49,23 @@ class OrderController extends Controller
 
     public function allBarcode()
     {
+        if(auth()->user()->role_id==1)
         $data=Bar::with('ward')->orderBy('id','DESC')->where('is_delete',0)->get();
+        else
+        $data=Bar::with('ward')->orderBy('id','DESC')->where('user_id',auth()->user()->id)->where('is_delete',0)->get();
         return view('order.all')->with('data',$data);
     }
 
     public function addBarcodePage()
     {
+        if(auth()->user()->role_id==1)
         $data=Ward::where('is_active',1)->get();
-        return view('order.add')->with('data',$data);
+        else
+        $data=Ward::where('is_active',1)->where('user_id',auth()->user()->id)->get();
+        
+        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+
+        return view('order.add',compact('users'))->with('data',$data);
     }
 
     public function deleteBarcode($id)
@@ -76,6 +97,7 @@ class OrderController extends Controller
         $add=new Bar();
         $add->address=$request->address;
         $add->ward_id=$request->ward_id;
+        $add->user_id=$request->user_id;
         $add->shed_id=$request->shed_id;
         // $add->details=$request->details;
         // $add->barcode=$barcode;

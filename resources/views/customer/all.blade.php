@@ -21,11 +21,16 @@
 								<thead>
 									<tr>
 										<th>Sr No.</th>
+										@if(auth()->user()->role_id==1)
+										<th>Category</th>
+										@endif
 										<th>Name</th>
 										<th>Email</th>
 										<th>Mobile Number</th>
 										<th>Address</th>
+										@if(auth()->user()->role_id!=1)
 										<th>Created At</th>
+										@endif
 										<th>Status</th>
 										<th>Action</th>
 									</tr>
@@ -34,11 +39,16 @@
 									@foreach($user as $key=>$datas)
 									<tr>
 										<td>{{++$key}}</td>
+										@if(auth()->user()->role_id==1)
+										<td>{{$datas->category_name}}</td>
+										@endif
 										<td>{{$datas->name}}</td>
 										<td>{{$datas->email}}</td>
 										<td>{{$datas->mobile_number}}</td>
 										<td>{{$datas->address}}</td>
+										@if(auth()->user()->role_id!=1)
 										<td>{{$datas->updated_at->format('Y/m/d')}}</td>
+										@endif
 										<td>@if($datas->is_active==1)
 											<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Active</div>
 											@else

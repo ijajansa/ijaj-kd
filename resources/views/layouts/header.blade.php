@@ -9,7 +9,7 @@
                         <div class="position-relative search-bar-box">
                             <!-- <input type="text" class="form-control search-control" placeholder="Type to search..."> <span class="position-absolute top-50 search-show translate-middle-y"><i class='bx bx-search'></i></span>
                             <span class="position-absolute top-50 search-close translate-middle-y"><i class='bx bx-x'></i></span> -->
-                            <h4 style="margin-top: 10px;text-transform: uppercase;font-weight: bold;">Manchar Nagarpanchayat</h4>
+                            <h4 style="margin-top: 10px;text-transform: uppercase;font-weight: bold;">Vita Municipal Council, Vita</h4>
                         </div>
                     </div>
                     <div class="top-menu ms-auto">
@@ -83,7 +83,7 @@
                     </div>
                     <div class="user-box dropdown">
                         <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{-- <img src="{{config('app.baseURL')}}/assets/images/kdmc-logo.png" class="user-img" alt="user avatar"> --}}
+                            <img src="{{config('app.baseURL')}}/assets/images/vita-logo.png" class="user-img" alt="user avatar">
                             <div class="user-info ps-3">
                                 <p class="user-name mb-0">{{ucwords(Auth::user()->name)}}</p>
                                 <p class="designattion mb-0">{{Auth::user()->email}}</p>

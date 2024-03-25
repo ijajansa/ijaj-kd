@@ -5,7 +5,9 @@
                     <img src="https://dsptechnologies.co.in/assets/title.png" class="logo-icon" alt="logo icon">
                 </div> -->
                 <div>
-                    {{-- <img src="{{config('app.baseURL')}}/assets/images/kdmc-logo.png" style="width: 130px;margin-top: 93px;margin-left: 47px;" alt="" /> --}}
+                    <img src="{{config('app.baseURL')}}/assets/images/vita-logo.png" style="width: 80%;
+                    margin-top: 98px;
+                    margin-left: 10%;" alt="" />
                 </div>
                 <!-- <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i></div> -->
             </div>

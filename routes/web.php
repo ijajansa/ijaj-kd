@@ -25,7 +25,7 @@ Route::get('/admin', function () {
     }
 });
 Route::get('/', function () {
-    return redirect('login');
+    return view('welcome');
 });
 
 Route::get('/migrate', function () {
@@ -61,6 +61,7 @@ Route::get('get-area',['middleware'=>'auth','uses'=>'CustomerController@getArea'
 Route::group(['prefix'=>'employee'],function(){
 Route::get('all',['middleware'=>'auth','uses'=>'CustomerController@allEmployeeData']);
 Route::get('add',['middleware'=>'auth','uses'=>'CustomerController@addEmployeePage']);
+Route::get('getInspectors',['middleware'=>'auth','uses'=>'CustomerController@getInspectors']);
 Route::post('add',['middleware'=>'auth','uses'=>'CustomerController@addEmployeeData']);
 Route::get('delete/{id}',['middleware'=>'auth','uses'=>'CustomerController@deleteEmployeeData']);
 Route::post('edit/{id}',['middleware'=>'auth','uses'=>'CustomerController@updateEmployeeData']);
@@ -78,6 +79,7 @@ Route::post('print/{id}/{address}',['middleware'=>'auth','uses'=>'OrderControlle
 Route::get('print-all',['middleware'=>'auth','uses'=>'OrderController@printAllBarcode']);
 Route::get('delete/{id}',['middleware'=>'auth','uses'=>'OrderController@deleteBarcode']);
 Route::get('getHajeriShed',['middleware'=>'auth','uses'=>'OrderController@getHajeriShed']);
+Route::get('getWards',['middleware'=>'auth','uses'=>'OrderController@getWards']);
 });
 
 Route::group(['prefix'=>'wards'],function(){

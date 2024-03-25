@@ -19,12 +19,29 @@
 							<h5 class="mb-0 text-primary">New Area</h5>
 						</div>
 						<hr>
-						<form class="row g-3" method="POST" action="{{config('app.baseURL')}}/barcode/add">
-							@csrf
-							
+					<form class="row g-3" method="POST" action="{{config('app.baseURL')}}/barcode/add">
+					@csrf
+					@if(auth()->user()->role_id==1)
+						<div class="col-xl-12">
+						<label class="form-label blog-label">System User <span class="text-danger" style="font-weight: bold;">*</span></label>
+						<select name="user_id" required class="form-control form-select @error('user_id') is-invalid @enderror" onchange="getWards(this.value)" id="inputCat">
+							<option value="">Select User</option>
+							@foreach($users as $user)
+							<option value="{{$user->id}}" @if(old('user_id')==$user->id) selected @endif>{{$user->name}} {{" - ".$user->category_name}}</option>
+							@endforeach
+						</select>
+						@error('user_id')
+						<span class="invalid-feedback" role="alert">
+							<strong>{{ $message }}</strong>
+						</span>
+						@enderror
+						</div>
+					@else
+						<input type="hidden" value="{{auth()->user()->id}}" name="user_id">
+					@endif
 							<div class="col-md-12">
 								<label for="inputFirstName2" class="form-label">Select Ward <span class="text-danger" style="font-weight: bold;">*</span></label>
-								<select class="form-control form-select" name="ward_id" required>
+								<select class="form-control form-select" id="ward_id" name="ward_id" required>
 									<option value="">Select</option>
 									@foreach($data as $ward)
 									<option value="{{$ward->id}}">{{$ward->name}}</option>
@@ -67,17 +84,17 @@
 <!--end page wrapper -->
 
 <script type="text/javascript">
-	function getHajeriShed(id)
+	function getWards(id)
 	{
 		if(id.length!=0)
 		{
 			$.ajax({
-				url:"{{config('app.baseURL')}}/barcode/getHajeriShed",
+				url:"{{config('app.baseURL')}}/barcode/getWards",
 				type:'GET',
 				data:{id:id},
 				success:function(data)
 				{
-					$("#shed_id").html(data);
+					$("#ward_id").html(data);
 				}
 			});
 		}

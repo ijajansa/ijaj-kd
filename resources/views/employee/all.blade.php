@@ -15,7 +15,36 @@
 
 				<div class="card">
 					<div class="card-body">
-						
+						<div class="row" style="justify-content: end">
+							@if(auth()->user()->role_id==1)
+								<div class="col-lg-3">
+								<label class="">System User</label>
+								<select id="user_id" required class="form-control form-select" onchange="getInspector(this.value)">
+									<option value="">Select User</option>
+									@foreach($users as $sys)
+									<option value="{{$sys->id}}" @if(request()->get('user_id')==$sys->id) selected @endif>{{$sys->name}} {{" - ".$sys->category_name}}</option>
+									@endforeach
+								</select>
+								</div>
+							@else
+								<input type="hidden" value="{{auth()->user()->id}}" id="user_id">
+							@endif
+							<div class="col-lg-3">
+								<label>Select Inspector</label>
+								<select id="inspector_id" required class="form-control form-select" id="inputCat">
+									<option value="">Select Inspector</option>
+									@foreach($inspectors as $inspector)
+									<option value="{{$inspector->id}}" @if(request()->get('inspector_id')==$inspector->id) selected @endif>{{$inspector->name}}</option>
+									@endforeach
+								</select>
+							</div>
+
+							<div class="col-lg-2">
+								<label style="opacity: 0;display:block">Select Inspector</label>
+								<button type="button" class="btn btn-primary btn-block" onclick="applyFilter()" style="width: 100%">Apply Filter</button>
+							</div>
+						</div>
+							<hr>
 						<div class="table-responsive">
 							<table id="example" class="table table-hover table-striped table-bordered" style="width:100%">
 								<thead>
@@ -65,5 +94,33 @@
 			</div>
 		</div>
 		<!--end page wrapper -->
+<script>
+	function applyFilter()
+	{
+		inspector_id=$("#inspector_id").val();
+		user_id=$("#user_id").val();
+		window.location.href="{{config('app.baseURL')}}/employee/all?user_id="+user_id+"&inspector_id="+inspector_id;
+	}
 
+	$(document).ready(function(){
+		user_id=$("#user_id").val();
+		getInspector(user_id);
+	});
+
+	function getInspector(id)
+	{
+		if(id.length!=0)
+		{
+			$.ajax({
+				url:"{{config('app.baseURL')}}/employee/getInspectors",
+				type:'GET',
+				data:{id:id},
+				success:function(data)
+				{
+					$("#inspector_id").html(data);
+				}
+			});
+		}
+	}
+</script>
 @endsection

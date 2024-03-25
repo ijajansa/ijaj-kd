@@ -27,7 +27,7 @@
 		<!--<p align="center" style="margin-top:0px;">-->
 		<!--	<img src="{{config('app.baseURL')}}/assets/images/kdmc-logo.png" style="width: 80px;margin-bottom: 0px;">-->
 		<!--</p>-->
-		<h3 align="center" style="font-size: 18px;margin-top:10px;">MANCHAR NAGARPANCHAYAT</h3>
+		<h3 align="center" style="font-size: 18px;margin-top:10px;">VITA MUNICIPAL COUNCIL, VITA</h3>
 			<?php $data1="Id :".$data->id."\nAddress :".$data->address."";?>
 			
 			<p align="center">

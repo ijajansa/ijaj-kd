@@ -46,5 +46,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\Role','role_id','role_id');
     }
-
+    public function category()
+    {
+        return $this->belongsTo('App\Models\Category','category_id','id');
+    }
 }

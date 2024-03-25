@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--favicon-->
-        <!-- <link rel="icon" href="https://dsptechnologies.co.in/assets/title.png" type="image/png" /> -->
+        <link rel="icon" href="{{config('app.baseURL')}}/assets/images/vita-logo.png" type="image/png" />
         <!--plugins-->
         <link href="{{config('app.baseURL')}}/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet"/>
         <link href="{{config('app.baseURL')}}/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
@@ -34,7 +34,7 @@
         <link rel="stylesheet" href="{{config('app.baseURL')}}/assets/plugins/notifications/css/lobibox.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-        <title>Manchar Nagarpanchayat - Admin Dashboard</title>
+        <title>Vita Municipal Council, Vita | Dashboard</title>
     </head>
 
     <body>

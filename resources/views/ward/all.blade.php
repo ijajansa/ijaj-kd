@@ -26,6 +26,9 @@
 										<tr>
 											<th>Sr. No</th>
 											<th>Ward Name</th>
+											@if(auth()->user()->role_id==1)
+											<th>System User</th>
+											@endif
 											<th>Status</th>
 											<th>Created Date</th>
 											<th>Action</th>
@@ -37,6 +40,9 @@
 										<tr>
 											<td>{{++$key}}</td>
 											<td>{{$data->name??''}}</td>
+											@if(auth()->user()->role_id==1)
+											<td>{{$data?->user?->name ?? '-'}}</td>
+											@endif
 											<td>
 												@if($data->is_active==1)
 												<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Active</div>
@@ -45,7 +51,7 @@
 												@endif
 											</td>
 											<td>{{$data->created_at->format('d-m-Y')}}</td>
-											<td><a href="{{config('app.baseURL')}}/wards/edit/{{$data->id}}"><button class="btn btn-primary"><i class="bx bxs-edit" style="margin-right: 0px;"></i></button></a>&nbsp;&nbsp;<a href="{{config('app.baseURL')}}/wards/delete/{{$data->id}}"><button class="btn btn-danger"><i class="bx bxs-trash" style="margin-right: 0px;"></i></button></a></td>
+											<td><a href="{{config('app.baseURL')}}/wards/edit/{{$data->id}}"><button class="btn btn-primary btn-sm"><i class="bx bxs-edit" style="margin-right: 0px;"></i></button></a>&nbsp;&nbsp;<a href="{{config('app.baseURL')}}/wards/delete/{{$data->id}}"><button class="btn btn-danger btn-sm"><i class="bx bxs-trash" style="margin-right: 0px;"></i></button></a></td>
 										</tr>
 										@endforeach
 									</tbody>
@@ -71,7 +77,25 @@
 			</div>
 			<div class="modal-body">
 				<div class="row">
+					@if(auth()->user()->role_id==1)
 					<div class="col-xl-12">
+						<label class="form-label blog-label">System User</label>
+						<select name="user_id" required class="form-control form-select @error('user_id') is-invalid @enderror" id="inputCat">
+							<option value="">Select User</option>
+							@foreach($users as $user)
+							<option value="{{$user->id}}" @if(old('user_id')==$user->id) selected @endif>{{$user->name}} {{" - ".$user->category_name}}</option>
+							@endforeach
+						</select>
+						@error('user_id')
+						<span class="invalid-feedback" role="alert">
+							<strong>{{ $message }}</strong>
+						</span>
+						@enderror
+					</div>
+					@else
+					<input type="hidden" value="{{auth()->user()->id}}" name="user_id">
+					@endif
+					<div class="col-xl-12 mt-2">
 						<label class="form-label blog-label">Ward Name</label>
 						<input type="text" name="ward_name" required placeholder="Ward Name" class="form-control">
 					</div>

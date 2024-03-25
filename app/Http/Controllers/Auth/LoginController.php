@@ -42,9 +42,15 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
-        $categories = Category::where('is_active',1)->orderBy('name','ASC')->get();
+        $categories = Category::where('is_active',1)->orderBy('name','ASC');
+        if($request->system=="cnd_waste")
+            $categories = $categories->where('type',1);
+        else
+            $categories = $categories->where('type',2);
+        $categories = $categories->get();
+
         return view('auth.user-login',compact('categories'));
     }
 

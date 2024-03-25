@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Hash;
 use Carbon\Carbon;
 use App\Models\Bar;
+use App\Models\User;
 use App\Models\Ward;
 use App\Models\Report;
 use App\Models\Customer;
@@ -13,6 +13,7 @@ use App\Models\HajeriShed;
 
 use App\Models\UserCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
@@ -61,13 +62,16 @@ class CustomerController extends Controller
 
     public function addCustomerPage()
     {
+        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
         $wards=Ward::where('is_active',1)->get();
-        return view('customer.add')->with('wards',$wards);
+        return view('customer.add',compact('users'))->with('wards',$wards);
     }
 
     public function addCustomerData(Request $request)
     {
-        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->first();
+        $category = User::where('id',$request->user_id)->first();
+
+        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_email)
         {
             $notification = array(
@@ -77,7 +81,7 @@ class CustomerController extends Controller
         return redirect()->back()->with($notification);
 
         }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->first();
+        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_mobile)
         {
             $notification = array(
@@ -93,7 +97,9 @@ class CustomerController extends Controller
         $data->mobile_number=$request->mobile_number;
         $data->address=$request->address;
         $data->ward_id=$request->ward_id;
+        $data->user_id=$request->user_id;
         // $data->shed_id=implode(',',$request->shed_id);
+        $data->category_id=$category->category_id ?? 0;
         $data->area_id=implode(',',$request->area_id);
         $data->password=Hash::make($request->password);
         $data->save();
@@ -106,13 +112,18 @@ class CustomerController extends Controller
 
     public function allCustomerData(Request $request)
     {
-        $user=Customer::orderBy('id','DESC')->where('role_id',1)->get();
+        $user=Customer::orderBy('customers.id','DESC');
+        if(auth()->user()->role_id!=1)
+        $user = $user->where('user_id',auth()->user()->id);
+
+        $user = $user->where('customers.role_id',1)->join('categories','categories.id','customers.category_id')->select('customers.*','categories.name as category_name')->get();
         return view('customer.all')->with('user',$user);
     }
 
     public function editCustomerPage($id)
     {
         $data=Customer::find($id);
+        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
         $wards=Ward::where('is_active',1)->get();
         // $sheds=HajeriShed::where('ward_id',$data->ward_id)->get();
         // foreach ($sheds as $key => $value) {
@@ -143,7 +154,7 @@ class CustomerController extends Controller
                 }                
             }
         }
-        return view('customer.edit')->with(['data'=>$data,'wards'=>$wards,'areas'=>$areas]);
+        return view('customer.edit')->with(['data'=>$data,'wards'=>$wards,'areas'=>$areas,'users'=>$users]);
     }
     public function deleteCustomerData($id)
     {
@@ -159,7 +170,8 @@ class CustomerController extends Controller
 
     public function updateCustomerData(Request $request)
     {
-        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->first();
+        $category = User::where('id',$request->user_id)->first();
+        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_email)
         {
             $notification = array(
@@ -169,7 +181,7 @@ class CustomerController extends Controller
         return redirect()->back()->with($notification);
 
         }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->first();
+        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_mobile)
         {
             $notification = array(
@@ -185,7 +197,8 @@ class CustomerController extends Controller
         $data->address=$request->address;
         $data->is_active=$request->status;
         $data->ward_id=$request->ward_id;
-        // $data->shed_id=implode(',', $request->shed_id);
+        $data->user_id=$request->user_id;
+        $data->category_id=$category->category_id ?? 0;
         $data->area_id=implode(',', $request->area_id);
         $data->save();
         $notification = array(
@@ -216,9 +229,24 @@ class CustomerController extends Controller
 
 // ALL EMPLOYEE DETAILS
 
+public function getInspectors(Request $request)
+{
+    $html="";
+        $html.='<option value="">Select Inspector</option>';
+        $datas=Customer::where('user_id',$request->id)->where('role_id',1)->where('is_active',1)->get();
+        if($datas)
+        {
+            foreach ($datas as $key => $data) {
+                $html.='<option value="'.$data->id.'">'.$data->name.'</option>';
+            }
+        }
+        return $html;
+}
+
 public function addEmployeeData(Request $request)
     {
-        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->first();
+        $category = User::where('id',$request->user_id)->first();
+        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_email)
         {
             $notification = array(
@@ -228,7 +256,7 @@ public function addEmployeeData(Request $request)
         return redirect()->back()->with($notification);
 
         }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->first();
+        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_mobile)
         {
             $notification = array(
@@ -245,9 +273,8 @@ public function addEmployeeData(Request $request)
         $data->role_id=2;
         $data->mobile_number=$request->mobile_number;
         $data->address=$request->address;
-        // $data->ward_id=$request->ward_id;
-        // $data->shed_id=implode(',',$request->shed_id);
-        // $data->area_id=implode(',',$request->area_id);
+        $data->user_id=$request->user_id;
+        $data->category_id=$category->category_id ?? 0;
         $data->password=Hash::make($request->password);
         $data->save();
         $notification = array(
@@ -260,14 +287,35 @@ public function addEmployeeData(Request $request)
 
     public function addEmployeePage()
     {
-        $inspectors=Customer::where('role_id',1)->where('is_active',1)->get();
-        return view('employee.add')->with('inspectors',$inspectors);
+        $inspectors=Customer::where('role_id',1);
+        if(auth()->user()->role_id!=1)
+        $inspectors=$inspectors->where('user_id',auth()->user()->id);
+        $inspectors=$inspectors->where('is_active',1)->get();
+
+        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+
+        return view('employee.add',compact('users'))->with('inspectors',$inspectors);
     }
 
     public function allEmployeeData(Request $request)
     {
-        $user=Customer::orderBy('id','DESC')->where('role_id',2)->get();
-        return view('employee.all')->with('user',$user);
+        $user=Customer::orderBy('id','DESC');
+        if(auth()->user()->role_id!=1)
+        $user = $user->where('user_id',auth()->user()->id);
+        $user = $user->where('role_id',2);
+        if($request->inspector_id!=null)
+        $user->where('inspector_id',$request->inspector_id);
+        $user = $user->get();
+
+        $inspectors=Customer::where('role_id',1);
+        if(auth()->user()->role_id!=1)
+        $inspectors=$inspectors->where('user_id',auth()->user()->id);
+        $inspectors=$inspectors->where('is_active',1)->get();
+
+        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+
+
+        return view('employee.all',compact('inspectors','users'))->with('user',$user);
     }
 
     public function deleteEmployeeData($id)
@@ -286,13 +334,15 @@ public function addEmployeeData(Request $request)
     public function editEmployeePage($id)
     {
         $data=Customer::find($id);
+        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
         $inspectors=Customer::where('role_id',1)->where('is_active',1)->get();
-        return view('employee.edit')->with(['data'=>$data,'inspectors'=>$inspectors]);
+        return view('employee.edit',compact('users'))->with(['data'=>$data,'inspectors'=>$inspectors]);
     }
 
     public function updateEmployeeData(Request $request)
     {
-        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->first();
+        $category = User::where('id',$request->user_id)->first();
+        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_email)
         {
             $notification = array(
@@ -302,7 +352,7 @@ public function addEmployeeData(Request $request)
         return redirect()->back()->with($notification);
 
         }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->first();
+        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
         if($check_mobile)
         {
             $notification = array(
@@ -320,6 +370,8 @@ public function addEmployeeData(Request $request)
         $data->address=$request->address;
         $data->is_active=$request->status;
         $data->inspector_id=$request->inspector_id;
+        $data->user_id=$request->user_id;
+        $data->category_id=$category->category_id ?? 0;
         $data->save();
         $notification = array(
             'message' => 'Employee Details Updated Successfully !',

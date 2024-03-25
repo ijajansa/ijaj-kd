@@ -2,29 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
+use App\Models\User;
 use App\Models\Ward;
+use App\Models\Category;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class WardController extends Controller
 {
     public function allWard()
     {
-    	$datas=Ward::orderBy('id','DESC')->get();
-    	return view('ward.all')->with('datas',$datas);
+		$users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+    	if(auth()->user()->role_id==1)
+		$datas=Ward::orderBy('id','DESC')->get();
+		else
+		$datas=Ward::where('user_id',auth()->user()->id)->orderBy('id','DESC')->get();
+
+    	return view('ward.all',compact('users'))->with('datas',$datas);
     }
 
     public function addWardPage($id)
     {
     	$data=Ward::find($id);
-    	return view('ward.add')->with('data',$data);
+		$users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+    	return view('ward.add',compact('users'))->with('data',$data);
     }
 
     public function addWard(Request $request)
     {
     	$data=new Ward();
     	$data->name=$request->ward_name;
+    	$data->user_id=$request->user_id;
     	$data->save();
 
 		$notification = array(
@@ -53,6 +62,7 @@ class WardController extends Controller
     	if($data)
     	{
     		$data->name=$request->name;
+    		$data->user_id=$request->user_id;
     		$data->is_active=$request->status;
     		$data->save();
 

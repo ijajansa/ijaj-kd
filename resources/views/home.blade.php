@@ -16,11 +16,29 @@
     width: 86%;
     /*margin-left: 20%*/
   }
+  @media(max-width :600px)
+  {
+    .col{
+    width: 100% !important;
+  }
+  .col .card{
+    width: 100%;
+    /*margin-left: 20%*/
+  } 
+  }
 </style>
 <!--start page wrapper -->
         <div class="page-wrapper">
             <div class="page-content">
-              <h3 align="center" style="text-transform: uppercase;margin-bottom: 30px;color:#000000">GVP Monitoring System</h3>
+              <h3 align="center" style="text-transform: uppercase;margin-bottom: 30px;color:#000000">
+                @if(auth()->user()->role_id==2 && auth()->user()->category?->type==1)
+                GVP Monitoring System - {{auth()->user()?->category?->name}}
+                @elseif(auth()->user()->role_id==2 && auth()->user()->category?->type==2)
+                Waste Management System - {{auth()->user()?->category?->name}}
+                @else
+                Admin Dashboard
+                @endif
+              </h3>
                 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4">
 
                    <div class="col">
