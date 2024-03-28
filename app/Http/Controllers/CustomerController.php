@@ -11,9 +11,14 @@ use App\Models\Customer;
 use App\Models\HajeriShed;
 
 
+use Illuminate\Support\Str;
 use App\Models\UserCategory;
+use App\Models\WasteRequest;
 use Illuminate\Http\Request;
+use App\Models\WasteCategory;
+use App\Models\WasteRequestItem;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
@@ -52,6 +57,138 @@ class CustomerController extends Controller
         }
         return response()->json(['success'=>true,'message'=>'success', 'user' => $user]);
 
+    }
+
+    public function customerRegister(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|unique:users,email',
+            'contact_number' => 'required|unique:users,contact_number',
+            'password' => 'required',
+            'ward' => 'required',
+            'area' => 'required',
+            'address' => 'required',
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
+        }
+        $data = $request->all();
+        $data['role_id'] =3;
+        $data['password'] =Hash::make($request->password);
+        $fillable = ['name', 'email', 'password', 'contact_number','password','area','ward','address','role_id'];
+        $user = new User();
+        $user->fillable($fillable);
+        $user->fill($data);
+        $user->save();
+        return response()->json(['success'=>true,'message'=>'Customer registered successfully', 'user' => $user]);
+
+    }
+
+    public function customerLogin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required',
+            'password' => 'required',
+            'type' => 'required|in:1,2',
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
+        }
+        $email = $request->input('email');
+        $password = $request->input('password');
+        if($request->type==1)
+        {
+            $user = Customer::where(function($q) use($email){
+            $q->where('email', '=', $email)->orWhere('mobile_number', '=', $email);
+            })->where('category_id',$request->category_id)->where('is_active',1)->first();
+
+        }
+        else
+        {       
+            $user = User::where(function($q) use($email){
+            $q->where('email', '=', $email)->orWhere('contact_number', '=', $email);
+            })->where('role_id',3)->where('is_active',1)->first();
+        }
+        if (!$user) {
+            return response()->json(['success'=>false, 'message' => 'Customer not found']);
+        }
+        if (!Hash::check($password, $user->password)) {
+            return response()->json(['success'=>false, 'message' => 'Invalid password']);
+        }
+        return response()->json(['success'=>true,'message'=>'success', 'user' => $user]);
+    }
+
+    public function sendRequest(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_id' => 'required',
+            'category_id' => 'required|in:1,2',
+            'ward' => 'required',
+            'area' => 'required',
+            'address' => 'required',
+            'items' => 'required|array'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
+        }
+
+        $data = new WasteRequest();
+        $data->customer_id= $request->customer_id;
+        $data->category_id= $request->category_id;
+        $data->area= $request->area;
+        $data->ward= $request->ward;
+        $data->address= $request->address;
+        $data->uuid = Str::uuid();
+        $data->save();
+        if(count($request->items))
+        {
+            foreach($request->items as $record)
+            {
+                $item = new WasteRequestItem();
+                $item->request_id = $data->id;
+                $item->category_id = $record['waste_category_id'];
+                $item->name = WasteCategory::where('id',$record['waste_category_id'])->first()->name ?? null;
+                $item->uuid = Str::uuid();
+                $item->qty = $record['qty'];
+                $item->customer_id = $request->customer_id;
+                $item->save();
+            }
+
+        return response()->json(['success'=>true,'message'=>'success', 'waste_request' => $data]);
+
+        }
+        return response()->json(['success'=>false,'message'=>'something went wrong']);
+
+    }
+
+    public function allRequest(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'customer_id' => 'required'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
+        }
+        $data = WasteRequest::where('customer_id',$request->customer_id)->with('request_items')->get();
+        return response()->json(['success'=>true,'message'=>'success', 'waste_request_list' => $data]);
+    }
+
+    public function getWasteCategories(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:1,2'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
+        }
+        $categories = WasteCategory::where('type',$request->type)->where('is_active',1)->get();
+        return response()->json(['success'=>true,'message'=>'success', 'categories' => $categories]);
     }
 
     public function addCustomerPage()

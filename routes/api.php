@@ -39,4 +39,11 @@ Route::get('getCategories', 'BookingController@getCategories');
 Route::post('getReportRecord', 'BookingController@getReportRecord');
 Route::post('addFirebaseToken', 'OrderController@addFirebaseToken');
 
+// customer login
+Route::post('customer-login', 'CustomerController@customerLogin');
+Route::post('customer-register', 'CustomerController@customerRegister');
+Route::post('get-categories', 'CustomerController@getWasteCategories');
+Route::post('send-requests', 'CustomerController@sendRequest');
+Route::post('all-requests', 'CustomerController@allRequest');
+
 
