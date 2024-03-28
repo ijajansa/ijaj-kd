@@ -190,6 +190,19 @@ class CustomerController extends Controller
         $categories = WasteCategory::where('type',$request->type)->where('is_active',1)->get();
         return response()->json(['success'=>true,'message'=>'success', 'categories' => $categories]);
     }
+    public function requestDetails(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'request_id' => 'required',
+            'customer_id' => 'required',
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
+        }
+        $data = WasteRequest::where('customer_id',$request->customer_id)->where('id',$request->request_id)->with('request_items')->first();
+        return response()->json(['success'=>true,'message'=>'success', 'waste_request_details' => $data]);
+    }
 
     public function addCustomerPage()
     {
