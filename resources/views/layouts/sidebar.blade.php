@@ -29,6 +29,15 @@
                     </a>
                 </li>
                 @endif
+                @if(auth()->user()->role_id==1)
+                <li>
+                    <a href="{{route('products.index')}}">
+                        <div class="parent-icon"><i class='bx bx-cube'></i>
+                        </div>
+                        <div class="menu-title">Waste Products</div>
+                    </a>
+                </li>
+                @endif
                 <!-- <li class="menu-label">Details</li>
                 <li>
                     <a href="{{config('app.baseURL')}}/hotel/all">
@@ -104,6 +113,15 @@
                         <div class="parent-icon"><i class='bx bx-user-plus'></i>
                         </div>
                         <div class="menu-title">All System User</div>
+                    </a>
+                </li>
+                @endif
+                @if(auth()->user()->role_id==1)
+                <li>
+                    <a href="{{route('waste-requests.index')}}">
+                        <div class="parent-icon"><i class='bx bx-receipt'></i>
+                        </div>
+                        <div class="menu-title">Waste Requests</div>
                     </a>
                 </li>
                 @endif

@@ -70,6 +70,8 @@ Route::get('view/{id}',['middleware'=>'auth','uses'=>'CustomerController@editEmp
 
 Route::resource('admins', 'AdminController')->middleware(['auth','super.admin']);
 Route::resource('categories', 'CategoryController')->middleware(['auth','super.admin']);
+Route::resource('products', 'ProductController')->middleware(['auth','super.admin']);
+Route::resource('waste-requests', 'WasteRequestController')->middleware(['auth','super.admin']);
 
 Route::group(['prefix'=>'barcode'],function(){
 Route::get('all',['middleware'=>'auth','uses'=>'OrderController@allBarcode']);
