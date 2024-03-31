@@ -125,7 +125,7 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
-            'category_id' => 'required|in:1,2',
+            'type' => 'required|in:1,2',
             'ward' => 'required',
             'area' => 'required',
             'address' => 'required',
@@ -138,7 +138,7 @@ class CustomerController extends Controller
 
         $data = new WasteRequest();
         $data->customer_id= $request->customer_id;
-        $data->category_id= $request->category_id;
+        $data->category_id= $request->type;
         $data->area= $request->area;
         $data->ward= $request->ward;
         $data->address= $request->address;
