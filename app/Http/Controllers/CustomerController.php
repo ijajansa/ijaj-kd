@@ -174,13 +174,21 @@ class CustomerController extends Controller
     public function allRequest(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id' => 'required'
+            'type' => 'required|in:1,2',
+            'customer_id' => 'required_if:type,1',
+            'employee_id' => 'required_if:type,2',
         ]);
         if ($validator->fails())
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
-        $data = WasteRequest::where('customer_id',$request->customer_id)->with('request_items')->get();
+        $data = WasteRequest::with('request_items');
+        if($request->type==1)
+        $data = $data->where('customer_id',$request->customer_id);
+        else if($request->type==2)
+        $data = $data->where('employee_id',$request->employee_id);
+        
+        $data = $data->get();
         return response()->json(['success'=>true,'message'=>'success', 'waste_request_list' => $data]);
     }
 
