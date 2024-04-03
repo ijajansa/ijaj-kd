@@ -129,12 +129,17 @@ class CustomerController extends Controller
             'ward' => 'required',
             'area' => 'required',
             'address' => 'required',
-            'items' => 'required|array'
+            'image' => 'required',
+            'request_items' => 'required|array'
         ]);
         if ($validator->fails())
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
+
+        $image_data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->image));
+        $filename = 'wastes/'.uniqid() . '.png';
+        file_put_contents(storage_path('app/' . $filename), $image_data);
 
         $data = new WasteRequest();
         $data->customer_id= $request->customer_id;
@@ -142,11 +147,12 @@ class CustomerController extends Controller
         $data->area= $request->area;
         $data->ward= $request->ward;
         $data->address= $request->address;
+        $data->image= $filename;
         $data->uuid = Str::uuid();
         $data->save();
-        if(count($request->items))
+        if(count($request->request_items))
         {
-            foreach($request->items as $record)
+            foreach($request->request_items as $record)
             {
                 $item = new WasteRequestItem();
                 $item->request_id = $data->id;
