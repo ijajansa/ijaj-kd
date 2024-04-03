@@ -14,7 +14,6 @@ class AddEmployerImageInWasteRequests extends Migration
     public function up()
     {
         Schema::table('waste_requests', function (Blueprint $table) {
-            $table->longText('image')->change();
             $table->longText('employee_image')->after('image')->nullable();
         });
     }
