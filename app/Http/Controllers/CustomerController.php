@@ -120,6 +120,42 @@ class CustomerController extends Controller
         }
         return response()->json(['success'=>true,'message'=>'success', 'user' => $user]);
     }
+    public function uploadRequest(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'request_id' => 'required',
+            'employee_image' => 'required',
+            'request_items.*.item_id' => 'required',
+            'request_items.*.actual_qty' => 'required'
+        ]);
+        if ($validator->fails())
+        {
+            return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
+        }
+
+        $image_data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->employee_image));
+        $filename = 'wastes/'.uniqid() . '.png';
+        file_put_contents(storage_path('app/' . $filename), $image_data);
+
+        $data = WasteRequest::find($request->request_id);
+        $data->employee_image= $filename;
+        $data->save();
+        if($data)
+        {
+            if(count($request->request_items))
+            {
+                foreach($request->request_items as $record)
+                {
+                    $item = WasteRequestItem::find($record['item_id']);
+                    $item->actual_qty = $record['actual_qty'];
+                    $item->save();
+                }
+
+                return response()->json(['success'=>true,'message'=>'success', 'waste_request' => $data]);
+            }
+        }
+        return response()->json(['success'=>false,'message'=>'something went wrong']);
+    }
 
     public function sendRequest(Request $request)
     {
