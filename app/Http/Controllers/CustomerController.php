@@ -218,13 +218,14 @@ class CustomerController extends Controller
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
-        $data = WasteRequest::with('request_items');
+        $data = WasteRequest::join('users','users.id','waste_requests.customer_id')
+        ->leftJoin('customers','customers.id','waste_requests.employee_id')->with('request_items');
         if($request->type==1)
-        $data = $data->where('customer_id',$request->customer_id);
+        $data = $data->where('waste_requests.customer_id',$request->customer_id);
         else if($request->type==2)
-        $data = $data->where('employee_id',$request->employee_id);
+        $data = $data->where('waste_requests.employee_id',$request->employee_id);
         
-        $data = $data->get();
+        $data = $data->select('waste_requests.*','users.name as customer_name','customers.name as employee_name')->get();
         return response()->json(['success'=>true,'message'=>'success', 'waste_request_list' => $data]);
     }
 
@@ -250,7 +251,13 @@ class CustomerController extends Controller
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
-        $data = WasteRequest::where('customer_id',$request->customer_id)->where('id',$request->request_id)->with('request_items')->first();
+        $data = WasteRequest::join('users','users.id','waste_requests.customer_id')
+        ->leftJoin('customers','customers.id','waste_requests.employee_id')
+        ->where('waste_requests.customer_id',$request->customer_id)
+        ->where('waste_requests.id',$request->request_id)
+        ->with('request_items')
+        ->select('waste_requests.*','users.name as customer_name','customers.name as employee_name')
+        ->first();
         return response()->json(['success'=>true,'message'=>'success', 'waste_request_details' => $data]);
     }
 
