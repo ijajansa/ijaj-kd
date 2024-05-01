@@ -7,10 +7,11 @@ use App\Models\Bar;
 use App\Models\User;
 use App\Models\Ward;
 use App\Models\Report;
+use App\Models\Category;
 use App\Models\Customer;
+
+
 use App\Models\HajeriShed;
-
-
 use Illuminate\Support\Str;
 use App\Models\UserCategory;
 use App\Models\WasteRequest;
@@ -161,7 +162,7 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'customer_id' => 'required',
-            'type' => 'required|in:1,2',
+            'type' => 'required',
             'ward' => 'required',
             'area' => 'required',
             'address' => 'required',
@@ -210,7 +211,7 @@ class CustomerController extends Controller
     public function allRequest(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:1,2',
+            'type' => 'required',
             'customer_id' => 'required_if:type,1',
             'employee_id' => 'required_if:type,2',
         ]);
@@ -229,16 +230,29 @@ class CustomerController extends Controller
         return response()->json(['success'=>true,'message'=>'success', 'waste_request_list' => $data]);
     }
 
+    public function getCustomerCategories(Request $request)
+    {
+        $categories = Category::where('is_active',1)->orderBy('name','ASC')->where('type',2)->get();
+        if($categories)
+        {
+            return response()->json(['success'=>true,'message'=>'Found', 'categories' => $categories]);
+        }
+        else
+        {
+            return response()->json(['success'=>false,'message'=>'Not Found']);
+        }
+    }
+
     public function getWasteCategories(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'type' => 'required|in:1,2'
+            'category_id' => 'required'
         ]);
         if ($validator->fails())
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
-        $categories = WasteCategory::where('type',$request->type)->where('is_active',1)->get();
+        $categories = WasteCategory::where('type',$request->category_id)->where('is_active',1)->get();
         return response()->json(['success'=>true,'message'=>'success', 'categories' => $categories]);
     }
     public function requestDetails(Request $request)

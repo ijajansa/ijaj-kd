@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WasteCategory;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Models\WasteCategory;
 
 class ProductController extends Controller
 {
@@ -14,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $categories = WasteCategory::orderBy('name','ASC')->get();
+        $categories = WasteCategory::orderBy('name','ASC')->leftJoin('categories','categories.id','waste_categories.type')->select('waste_categories.*','categories.name as cat_name')->get();
         return view('products.all',compact('categories'));
     }
 
@@ -25,7 +26,8 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('products.add');
+        $categories = Category::where('type',2)->where('is_active',1)->get();
+        return view('products.add',compact('categories'));
     }
 
     /**
@@ -71,7 +73,8 @@ class ProductController extends Controller
     public function edit($id)
     {
         $data = WasteCategory::find($id);
-        return view('products.edit',compact('data'));
+        $categories = Category::where('type',2)->where('is_active',1)->get();
+        return view('products.edit',compact('data','categories'));
     }
 
     /**

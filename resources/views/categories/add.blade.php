@@ -32,8 +32,8 @@
 							<div class="col-md-12">
 								<label for="inputFirstName2" class="form-label">Select Type</label>
 								<select class="form-control form-select @error('type') is-invalid @enderror" name="type">
-									<option value="1" @if(old('type')==1) selected @endif>CND-Waste</option>
-									<option value="2" @if(old('type')==2) selected @endif>E-Waste</option>
+									<option value="1" @if(old('type')==1) selected @endif>GVP Monitoring</option>
+									<option value="2" @if(old('type')==2) selected @endif>Waste Management</option>
 								</select>
 								@error('type')
                                 	<span class="invalid-feedback" role="alert">

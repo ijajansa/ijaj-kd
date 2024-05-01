@@ -12,14 +12,14 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="mb-4 text-center">
-                                <img src="{{config('app.baseURL')}}/assets/images/vita-logo.png" style="width: 15%;" alt="" />
+                                <img src="{{config('app.baseURL')}}/assets/images/vita-logo.png" style="width: 200px;" alt="" />
                             </div>
                         </div>
                         <div class="col-lg-3"></div>
                             <div class="col-lg-3">
                             <div class="card" style="border: none;
                             border-radius: 15px;
-                            box-shadow: 1px 1px 10px rgba(0,0,0,0.1);cursor:pointer" onclick=window.location.href="{{url('login')}}?system=cnd_waste">
+                            box-shadow: 1px 1px 10px rgba(0,0,0,0.1);cursor:pointer" onclick=window.location.href="{{url('login')}}?system=gvp_monitoring">
                                 <div class="card-body">
                                     <div class="p-4 rounded">
                                         <div class="text-center">
@@ -34,7 +34,7 @@
                         <div class="col-lg-3">
                             <div class="card" style="border: none;
                             border-radius: 15px;
-                            box-shadow: 1px 1px 10px rgba(0,0,0,0.1);cursor:pointer" onclick=window.location.href="{{url('login')}}?system=e_waste">
+                            box-shadow: 1px 1px 10px rgba(0,0,0,0.1);cursor:pointer" onclick=window.location.href="{{url('login')}}?system=waste_management">
                                 <div class="card-body">
                                     <div class="p-4 rounded">
                                         <div class="text-center">

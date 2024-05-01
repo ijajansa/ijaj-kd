@@ -45,7 +45,7 @@ class LoginController extends Controller
     public function showLoginForm(Request $request)
     {
         $categories = Category::where('is_active',1)->orderBy('name','ASC');
-        if($request->system=="cnd_waste")
+        if($request->system=="gvp_monitoring")
             $categories = $categories->where('type',1);
         else
             $categories = $categories->where('type',2);

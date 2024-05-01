@@ -32,11 +32,8 @@
 									<tr>
 										<td>{{++$key}}</td>
 										<td>{{$data->name}}</td>
-										<td>@if($data->type==1)
-											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">CND Waste</div>
-											@elseif($data->type==2)
-											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">E-Waste</div>
-											@endif
+										<td>
+											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">{{$data->cat_name ?? 'Not Found'}}</div>
 										</td>
 										<td>@if($data->is_active==1)
 											<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Active</div>

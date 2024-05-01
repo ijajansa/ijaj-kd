@@ -42,7 +42,8 @@ Route::post('addFirebaseToken', 'OrderController@addFirebaseToken');
 // customer login
 Route::post('customer-login', 'CustomerController@customerLogin');
 Route::post('customer-register', 'CustomerController@customerRegister');
-Route::post('get-categories', 'CustomerController@getWasteCategories');
+Route::post('get-categories', 'CustomerController@getCustomerCategories');
+Route::post('get-waste-categories', 'CustomerController@getWasteCategories');
 Route::post('send-requests', 'CustomerController@sendRequest');
 Route::post('all-requests', 'CustomerController@allRequest');
 Route::post('upload-requests', 'CustomerController@uploadRequest');

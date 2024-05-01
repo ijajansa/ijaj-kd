@@ -33,9 +33,9 @@
 										<td>{{++$key}}</td>
 										<td>{{$data->name}}</td>
 										<td>@if($data->type==1)
-											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">CND Waste</div>
+											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">GVP Monitoring</div>
 											@elseif($data->type==2)
-											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">E-Waste</div>
+											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">Waste Management</div>
 											@endif
 										</td>
 										<td>@if($data->is_active==1)
