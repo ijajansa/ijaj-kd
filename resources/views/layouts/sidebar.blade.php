@@ -133,7 +133,16 @@
                         <div class="menu-title">Inspection Reports</div>
                     </a>
                 </li>
-
+                @if(auth()->user()->role_id==1)
+                <li>
+                    <a href="{{config('app.baseURL')}}/customers">
+                        <div class="parent-icon"><i class='bx bx-user-circle'></i>
+                        </div>
+                        <div class="menu-title">Customers</div>
+                    </a>
+                </li>
+                
+                @endif
 
 
 
