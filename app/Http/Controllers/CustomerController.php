@@ -165,6 +165,9 @@ class CustomerController extends Controller
             'type' => 'required',
             'ward' => 'required',
             'area' => 'required',
+            'name' => 'required',
+            'email' => 'nullable',
+            'contact_number' => 'required',
             'address' => 'required',
             'image' => 'required',
             'request_items' => 'required|array'
@@ -179,10 +182,12 @@ class CustomerController extends Controller
         file_put_contents(storage_path('app/' . $filename), $image_data);
 
         $data = new WasteRequest();
-        $data->customer_id= $request->customer_id;
         $data->category_id= $request->type;
         $data->area= $request->area;
         $data->ward= $request->ward;
+        $data->name= $request->name;
+        $data->email= $request->email;
+        $data->contact_number= $request->contact_number;
         $data->address= $request->address;
         $data->image= $filename;
         $data->uuid = Str::uuid();
@@ -197,7 +202,6 @@ class CustomerController extends Controller
                 $item->name = WasteCategory::where('id',$record['waste_category_id'])->first()->name ?? null;
                 $item->uuid = Str::uuid();
                 $item->qty = $record['qty'];
-                $item->customer_id = $request->customer_id;
                 $item->save();
             }
 
