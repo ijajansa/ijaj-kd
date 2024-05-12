@@ -161,7 +161,6 @@ class CustomerController extends Controller
     public function sendRequest(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'customer_id' => 'required',
             'type' => 'required',
             'ward' => 'required',
             'area' => 'required',
