@@ -20,6 +20,7 @@
                         <div class="menu-title">Dashboard</div>
                     </a>
                 </li>
+                
                 @if(auth()->user()->role_id==1)
                 <li>
                     <a href="{{route('categories.index')}}">
@@ -29,46 +30,7 @@
                     </a>
                 </li>
                 @endif
-                @if(auth()->user()->role_id==1)
-                <li>
-                    <a href="{{route('products.index')}}">
-                        <div class="parent-icon"><i class='bx bx-cube'></i>
-                        </div>
-                        <div class="menu-title">Waste Products</div>
-                    </a>
-                </li>
-                @endif
-                <!-- <li class="menu-label">Details</li>
-                <li>
-                    <a href="{{config('app.baseURL')}}/hotel/all">
-                        <div class="parent-icon"><i class='bx bx-plus'></i>
-                        </div>
-                        <div class="menu-title">About Hotel</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{config('app.baseURL')}}/enquiry/all">
-                        <div class="parent-icon"><i class='bx bx-folder'></i>
-                        </div>
-                        <div class="menu-title">View All Enquiry</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{config('app.baseURL')}}/facilities/all">
-                        <div class="parent-icon"><i class='bx bx-plus'></i>
-                        </div>
-                        <div class="menu-title">Add Facilities</div>
-                    </a>
-                </li> -->
-                <!-- <li class="menu-label">Dashboard</li> -->
-                <!-- <li>
-                    <a href="{{config('app.baseURL')}}/customer/all">
-                        <div class="parent-icon"><i class='bx bx-folder'></i>
-                        </div>
-                        <div class="menu-title">All Customer</div>
-                    </a>
-                </li> -->
-               
+                
                 <li>
                     <a href="{{config('app.baseURL')}}/wards/all">
                         <div class="parent-icon"><i class='bx bx-menu'></i>
@@ -76,13 +38,7 @@
                         <div class="menu-title">All Wards</div>
                     </a>
                 </li>
-                <!-- <li>
-                    <a href="{{config('app.baseURL')}}/hajeri-shed/all">
-                        <div class="parent-icon"><i class='bx bx-file'></i>
-                        </div>
-                        <div class="menu-title">All Hajeri Shed</div>
-                    </a>
-                </li> -->
+                
                 <li>
                     <a href="{{config('app.baseURL')}}/barcode/all">
                         <div class="parent-icon"><i class='bx bx-folder'></i>
@@ -116,16 +72,7 @@
                     </a>
                 </li>
                 @endif
-                @if(auth()->user()->role_id==1)
-                <li>
-                    <a href="{{route('waste-requests.index')}}">
-                        <div class="parent-icon"><i class='bx bx-receipt'></i>
-                        </div>
-                        <div class="menu-title">Waste Requests</div>
-                    </a>
-                </li>
-                @endif
-
+               
                 <li>
                     <a href="{{config('app.baseURL')}}/report/all">
                         <div class="parent-icon"><i class='bx bx-menu'></i>
@@ -133,17 +80,22 @@
                         <div class="menu-title">Inspection Reports</div>
                     </a>
                 </li>
-                @if(auth()->user()->role_id==1)
                 <li>
-                    <a href="{{config('app.baseURL')}}/customers">
-                        <div class="parent-icon"><i class='bx bx-user-circle'></i>
-                        </div>
-                        <div class="menu-title">Customers</div>
-                    </a>
-                </li>
+					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+						<div class="parent-icon"><i class="bx bx-cube"></i>
+						</div>
+						<div class="menu-title">Waste Management</div>
+					</a>
+					<ul class="mm-collapse" style="height: 0px;">
+                        @if(auth()->user()->role_id==1)
+						<li> <a href="{{route('products.index')}}"><i class="bx bx-radio-circle"></i>Waste Products</a>
+						</li>
+						<li> <a href="{{route('waste-requests.index')}}"><i class="bx bx-radio-circle"></i>Waste Requests</a>
+						</li>
+                        @endif
+					</ul>
+				</li>
                 
-                @endif
-
 
 
                 
