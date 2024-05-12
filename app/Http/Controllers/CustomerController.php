@@ -162,6 +162,7 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'type' => 'required',
+            'device_token' => 'required',
             'ward' => 'required',
             'area' => 'required',
             'name' => 'required',
@@ -179,6 +180,22 @@ class CustomerController extends Controller
         $image_data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->image));
         $filename = 'wastes/'.uniqid() . '.png';
         file_put_contents(storage_path('app/' . $filename), $image_data);
+
+        $user = User::where('contact_number',$request->contact_number)->first();
+        if($user!=null)
+        {
+            $user->device_token = $request->device_token;
+        }
+        else
+        {
+            $user= new User();
+            $user->role_id = 3;
+            $user->contact_number = $request->contact_number;
+            $user->device_token = $request->device_token;
+            $user->password = Hash::make("#$%ERTYU");
+            $user->name = "Demo";
+        }
+        $user->save();
 
         $data = new WasteRequest();
         $data->category_id= $request->type;

@@ -21,38 +21,65 @@
 						<form class="row g-3" method="POST" action="{{route('waste-requests.update',$data->id)}}">
 							@csrf
 							@method('PATCH')
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="inputFirstName2" class="form-label">Customer Name</label>
 								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$data->name)}}" disabled placeholder="Name">
 								
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="inputFirstName2" class="form-label">Contact Number</label>
 								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$data->contact_number)}}" disabled placeholder="Name">
-								
 							</div>
 							
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="inputFirstName2" class="form-label">Ward</label>
 								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$data->ward)}}" disabled placeholder="Name">
 								
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="inputFirstName2" class="form-label">Area</label>
 								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$data->area)}}" disabled placeholder="Name">
 								
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="inputFirstName2" class="form-label">Address</label>
 								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$data->address)}}" disabled placeholder="Name">
 					
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-3">
 								<label for="inputFirstName2" class="form-label">Waste Type</label>
 								<select class="form-control form-select @error('type') is-invalid @enderror" disabled name="type">
 									<option value="1" @if($data->category_id==1) selected @endif>CND-Waste</option>
 									<option value="2" @if($data->category_id==2) selected @endif>E-Waste</option>
 								</select>
+							</div>
+							<div class="col-md-3">
+								<label for="inputFirstName2" class="form-label">Assign Request To Employee</label>
+								<select class="form-control form-select @error('type') is-invalid @enderror" required name="employee_id">
+									<option value="">Select Employee</option>
+									@foreach($employees as $employee)
+									<option value="{{$employee->id}}" @if($data->employee_id==$employee->id) selected @endif>{{$employee->name}}</option>
+									@endforeach
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label for="inputFirstName2" class="form-label">Request Status</label>
+								<p>
+									@if($data->status==1) 
+									<h6 class="text-danger">New</h6> 
+									@elseif($data->status==2) 
+									<h6 class="text-success">Employee Assigned</h6> 
+									@elseif($data->status==3) 
+									<h6 class="text-warning">Processing</h6> 
+									@elseif($data->status==4) 
+									<h6 class="text-success">Completed</h6>  
+									@else 
+									<h6 class="text-danger">Rejected</h6> 
+									@endif
+								</p>
+							</div>
+							<div class="col-md-3">
+								<button type="submit" class="btn btn-primary">Assign Employee</button>
 							</div>
 
 							<div class="col-12"><hr></div>

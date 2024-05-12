@@ -16,7 +16,7 @@ class WasteRequestController extends Controller
      */
     public function index()
     {
-        $data = WasteRequest::leftJoin('users','users.id','waste_requests.customer_id')->select('waste_requests.*','users.name','users.contact_number')->orderBy('waste_requests.id','DESC')->get();
+        $data = WasteRequest::leftJoin('categories','categories.id','waste_requests.category_id')->select('waste_requests.*','categories.name as category_name')->get();
         return view('waste-requests.all',compact('data'));
     }
 
@@ -60,15 +60,13 @@ class WasteRequestController extends Controller
      */
     public function edit($uuid)
     {
-        $data = WasteRequest::where('waste_requests.uuid',$uuid)
-        ->leftJoin('users','users.id','waste_requests.customer_id')
-        ->select('waste_requests.*','users.name','users.contact_number')
-        ->orderBy('waste_requests.id','DESC')->first();
+        $data = WasteRequest::where('uuid',$uuid)->first();
         if($data)
         {
+            $employees = Customer::where('category_id',$data->category_id)->get();
             $data['waste_items'] = WasteRequestItem::where('request_id',$data->id)->get();
         }
-        return view('waste-requests.edit',compact('data'));
+        return view('waste-requests.edit',compact('data','employees'));
 
     }
 
@@ -81,7 +79,18 @@ class WasteRequestController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data= WasteRequest::find($id);
+        if($data)
+        {
+            $data->employee_id = $request->employee_id;
+            $data->status = 2;
+            $data->save();
+        }
+        $notification = array(
+            'message' => 'Employee Assigned Successfully',
+            'alert-type' => 'success'
+        );
+        return redirect()->back()->with($notification);
     }
 
     /**

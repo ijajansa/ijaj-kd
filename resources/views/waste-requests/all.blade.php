@@ -26,6 +26,7 @@
 										<th>Ward</th>
 										<th>Area</th>
 										<th>Waste Type</th>
+										<th>Status</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -37,13 +38,22 @@
 										<td>{{$record?->contact_number}}</td>
 										<td>{{$record?->ward}}</td>
 										<td>{{$record?->area}}</td>
-										<td>@if($record->category_id==1)
-											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">CND Waste</div>
-											@elseif($record->category_id==2)
-											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">E-Waste</div>
+										<td>
+											<div class="badge rounded-pill text-primary bg-light-primary p-2 text-uppercase px-3">{{$record->category_name}}</div>
+										</td>
+										<td>
+											@if($record->status==1) 
+											<h6 class="text-danger">New</h6> 
+											@elseif($record->status==2) 
+											<h6 class="text-success">Employee Assigned</h6> 
+											@elseif($record->status==3) 
+											<h6 class="text-warning">Processing</h6> 
+											@elseif($record->status==4) 
+											<h6 class="text-success">Completed</h6>  
+											@else 
+											<h6 class="text-danger">Rejected</h6> 
 											@endif
 										</td>
-
 										<td>
 											<div class="d-flex order-actions">
 												<a href="{{route('waste-requests.edit',$record->uuid)}}" class=""><i class='bx bxs-edit'></i></a>
