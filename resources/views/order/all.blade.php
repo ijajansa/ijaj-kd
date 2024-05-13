@@ -46,7 +46,8 @@
 										<td>{{$datas?->user?->name ?? '-'}}</td>
 										@endif
 										<td>
-										  {{"QR Code"}}
+											<?php $data1="Id :".$datas?->id."\nAddress :".$datas?->address."";?>
+											{!! QrCode::size(80)->generate($data1) !!}
 										</td>
 										<td>
 											<div class="d-flex order-actions">
