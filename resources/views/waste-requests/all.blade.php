@@ -27,6 +27,7 @@
 										<th>Area</th>
 										<th>Waste Type</th>
 										<th>Status</th>
+										<th>Date</th>
 										<th>Action</th>
 									</tr>
 								</thead>
@@ -54,6 +55,7 @@
 											<h6 class="text-danger">Rejected</h6> 
 											@endif
 										</td>
+										<td>{{date('Y-m-d',strtotime($record->created_at))}}</td>
 										<td>
 											<div class="d-flex order-actions">
 												<a href="{{route('waste-requests.edit',$record->uuid)}}" class=""><i class='bx bxs-edit'></i></a>

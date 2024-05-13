@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Customer;
 use App\Models\WasteRequest;
-use App\Models\WasteRequestItem;
 use Illuminate\Http\Request;
+use App\Models\WasteRequestItem;
 
 class WasteRequestController extends Controller
 {
@@ -86,11 +87,48 @@ class WasteRequestController extends Controller
             $data->status = 2;
             $data->save();
         }
+
+        $customer = User::where('contact_number',$data->contact_number)->first();
+        if($customer && $customer->device_token!=null)
+        {
+            $msg = 'Employee assigned to your request, Soon they reach to your place for collection.';
+            $this->sendNotification($customer->device_token,$msg);
+        }
         $notification = array(
             'message' => 'Employee Assigned Successfully',
             'alert-type' => 'success'
         );
         return redirect()->back()->with($notification);
+    }
+
+    public function sendNotification($token, $msg)
+    {
+        // dd($token);
+        $url = "https://fcm.googleapis.com/fcm/send";
+
+        $fields = array(
+            "to" => $token,
+            "notification" => array(
+                "body" => $msg,
+                "title" => "VITA MUNICIPAL COUNCIL, VITA",
+                "icon" => "https://kdmc3.kdmcgvp.in/assets/images/vita-logo.png",
+                "click_action" => ""
+            )
+        );
+
+        $headers = array(
+            'Authorization: key=AAAAEsvVgM8:APA91bF0CNMMsHY5wPCszJ7PMawe7Caop2nH-N-AzaEjCPohUtui_c-36S-q7VGchlXCsQaqmCnA7aitD2SEsytm5P7OZOzx9UFfUFfPOz1tuhqOL6MwDO9xafKw67iBRDIEJXnTnyP-',
+            'Content-Type:application/json'
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        $result = curl_exec($ch);
+        curl_close($ch);
     }
 
     /**
