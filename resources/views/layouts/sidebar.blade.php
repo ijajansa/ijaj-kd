@@ -47,28 +47,26 @@
                     </a>
                 </li>
 
-                 <li>
-                    <a href="{{config('app.baseURL')}}/user/all">
-                        <div class="parent-icon"><i class='bx bx-user'></i>
-                        </div>
-                        <div class="menu-title">All Inspector</div>
-                    </a>
-                </li>
-
-
                 <li>
-                    <a href="{{config('app.baseURL')}}/employee/all">
-                        <div class="parent-icon"><i class='bx bx-user-plus'></i>
-                        </div>
-                        <div class="menu-title">All Employees</div>
-                    </a>
-                </li>
+					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+						<div class="parent-icon"><i class="bx bx-user-plus"></i>
+						</div>
+						<div class="menu-title">Employee Section</div>
+					</a>
+					<ul class="mm-collapse" style="height: 0px;">
+						<li> <a href="{{config('app.baseURL')}}/user/all"><i class="bx bx-user"></i>All Inspector</a>
+						</li>
+						<li> <a href="{{config('app.baseURL')}}/employee/all"><i class="bx bx-user-plus"></i>All Employee</a>
+						</li>
+					</ul>
+				</li>
+
                 @if(auth()->user()->role_id==1)
                 <li>
                     <a href="{{route('admins.index')}}">
                         <div class="parent-icon"><i class='bx bx-user-plus'></i>
                         </div>
-                        <div class="menu-title">All System User</div>
+                        <div class="menu-title">All System Admin</div>
                     </a>
                 </li>
                 @endif
@@ -84,7 +82,7 @@
 					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
 						<div class="parent-icon"><i class="bx bx-cube"></i>
 						</div>
-						<div class="menu-title">Waste Management</div>
+						<div class="menu-title">Waste Manageme.</div>
 					</a>
 					<ul class="mm-collapse" style="height: 0px;">
                         @if(auth()->user()->role_id==1)
