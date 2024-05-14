@@ -117,7 +117,7 @@ class WasteRequestController extends Controller
         );
 
         $headers = array(
-            'Authorization: key=AAAAEsvVgM8:APA91bF0CNMMsHY5wPCszJ7PMawe7Caop2nH-N-AzaEjCPohUtui_c-36S-q7VGchlXCsQaqmCnA7aitD2SEsytm5P7OZOzx9UFfUFfPOz1tuhqOL6MwDO9xafKw67iBRDIEJXnTnyP-',
+            'Authorization: key='.$_ENV['FCM_SERVER_KEY'],
             'Content-Type:application/json'
         );
 
