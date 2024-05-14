@@ -93,6 +93,7 @@ class CustomerController extends Controller
             'email' => 'required',
             'password' => 'required',
             'type' => 'required|in:1,2',
+            'device_token' => 'required'
         ]);
         if ($validator->fails())
         {
@@ -113,11 +114,17 @@ class CustomerController extends Controller
             $q->where('email', '=', $email)->orWhere('contact_number', '=', $email);
             })->where('role_id',3)->where('is_active',1)->first();
         }
+
         if (!$user) {
             return response()->json(['success'=>false, 'message' => 'Customer not found']);
         }
         if (!Hash::check($password, $user->password)) {
             return response()->json(['success'=>false, 'message' => 'Invalid password']);
+        }
+        if($user)
+        {
+            $user->device_token = $request->device_token;
+            $user->save();
         }
         return response()->json(['success'=>true,'message'=>'success', 'user' => $user]);
     }
