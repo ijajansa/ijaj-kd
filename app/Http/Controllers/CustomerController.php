@@ -285,19 +285,14 @@ class CustomerController extends Controller
     public function requestDetails(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'request_id' => 'required',
-            'customer_id' => 'required',
+            'request_id' => 'required'
         ]);
         if ($validator->fails())
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
-        $data = WasteRequest::join('users','users.id','waste_requests.customer_id')
-        ->leftJoin('customers','customers.id','waste_requests.employee_id')
-        ->where('waste_requests.customer_id',$request->customer_id)
-        ->where('waste_requests.id',$request->request_id)
+        $data = WasteRequest::where('id',$request->request_id)
         ->with('request_items')
-        ->select('waste_requests.*','users.name as customer_name','customers.name as employee_name')
         ->first();
         return response()->json(['success'=>true,'message'=>'success', 'waste_request_details' => $data]);
     }
