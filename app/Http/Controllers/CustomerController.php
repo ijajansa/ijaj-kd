@@ -256,7 +256,19 @@ class CustomerController extends Controller
         else if($request->type==1)
         $data = $data->where('waste_requests.employee_id',$request->employee_id);
         
-        $data = $data->select('waste_requests.*','users.name as customer_name','customers.name as employee_name')->get();
+        $data = $data->select('waste_requests.*','users.name as customer_name','customers.name as employee_name')->get()->map(function($data){
+            if($data->status==1)
+            $data['status'] = 'New';
+            else if($data->status==2)
+            $data['status'] = 'Employee Assigned';
+            else if($data->status==3)
+            $data['status'] = 'Processing';
+            else if($data->status==4)
+            $data['status'] = 'Completed';
+            else if($data->status==5)
+            $data['status'] = 'Rejected';
+            return $data;
+        });
         return response()->json(['success'=>true,'message'=>'success', 'waste_request_list' => $data]);
     }
 
@@ -297,6 +309,19 @@ class CustomerController extends Controller
         $data = WasteRequest::where('id',$request->request_id)
         ->with('request_items')
         ->first();
+        if($data)
+        {
+            if($data->status==1)
+            $data['status'] = 'New';
+            else if($data->status==2)
+            $data['status'] = 'Employee Assigned';
+            else if($data->status==3)
+            $data['status'] = 'Processing';
+            else if($data->status==4)
+            $data['status'] = 'Completed';
+            else if($data->status==5)
+            $data['status'] = 'Rejected';
+        }
         return response()->json(['success'=>true,'message'=>'success', 'waste_request_details' => $data]);
     }
 
