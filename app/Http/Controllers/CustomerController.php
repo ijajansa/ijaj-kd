@@ -246,7 +246,7 @@ class CustomerController extends Controller
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
-        $data = WasteRequest::join('users','users.id','waste_requests.customer_id')
+        $data = WasteRequest::leftJoin('users','users.id','waste_requests.customer_id')
         ->leftJoin('customers','customers.id','waste_requests.employee_id')->with('request_items');
         if($request->type==2)
         $data = $data->where('waste_requests.customer_id',$request->customer_id);
