@@ -239,8 +239,8 @@ class CustomerController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'type' => 'required',
-            'customer_id' => 'required_if:type,1',
-            'employee_id' => 'required_if:type,2',
+            'customer_id' => 'required_if:type,2',
+            'employee_id' => 'required_if:type,1',
         ]);
         if ($validator->fails())
         {
@@ -248,9 +248,9 @@ class CustomerController extends Controller
         }
         $data = WasteRequest::join('users','users.id','waste_requests.customer_id')
         ->leftJoin('customers','customers.id','waste_requests.employee_id')->with('request_items');
-        if($request->type==1)
+        if($request->type==2)
         $data = $data->where('waste_requests.customer_id',$request->customer_id);
-        else if($request->type==2)
+        else if($request->type==1)
         $data = $data->where('waste_requests.employee_id',$request->employee_id);
         
         $data = $data->select('waste_requests.*','users.name as customer_name','customers.name as employee_name')->get();
