@@ -47,19 +47,7 @@
                     </a>
                 </li>
 
-                <li>
-					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
-						<div class="parent-icon"><i class="bx bx-user-plus"></i>
-						</div>
-						<div class="menu-title">Employee Section</div>
-					</a>
-					<ul class="mm-collapse" style="height: 0px;">
-						<li> <a href="{{config('app.baseURL')}}/user/all"><i class="bx bx-user"></i>All Inspector</a>
-						</li>
-						<li> <a href="{{config('app.baseURL')}}/employee/all"><i class="bx bx-user-plus"></i>All Employee</a>
-						</li>
-					</ul>
-				</li>
+                
 
                 @if(auth()->user()->role_id==1)
                 <li>
@@ -91,6 +79,19 @@
 						<li> <a href="{{route('waste-requests.index')}}"><i class="bx bx-radio-circle"></i>Waste Requests</a>
 						</li>
                         @endif
+					</ul>
+				</li>
+                <li>
+					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+						<div class="parent-icon"><i class="bx bx-user-plus"></i>
+						</div>
+						<div class="menu-title">Employee Section</div>
+					</a>
+					<ul class="mm-collapse" style="height: 0px;">
+						<li> <a href="{{config('app.baseURL')}}/user/all"><i class="bx bx-user"></i>All Inspector</a>
+						</li>
+						<li> <a href="{{config('app.baseURL')}}/employee/all"><i class="bx bx-user-plus"></i>All Employee</a>
+						</li>
 					</ul>
 				</li>
                 
