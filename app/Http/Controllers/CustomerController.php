@@ -133,7 +133,8 @@ class CustomerController extends Controller
         $validator = Validator::make($request->all(), [
             'request_id' => 'required',
             'employee_image' => 'required',
-            'request_items.*.item_id' => 'required',
+            'employee_remark' => 'nullable',
+            'request_items.*.waste_category_id' => 'required',
             'request_items.*.actual_qty' => 'required'
         ]);
         if ($validator->fails())
@@ -147,6 +148,8 @@ class CustomerController extends Controller
 
         $data = WasteRequest::find($request->request_id);
         $data->employee_image= $filename;
+        $data->employee_remark= $request->employee_remark ?? null;
+        $data->status= 4;
         $data->save();
         if($data)
         {
@@ -154,7 +157,7 @@ class CustomerController extends Controller
             {
                 foreach($request->request_items as $record)
                 {
-                    $item = WasteRequestItem::find($record['item_id']);
+                    $item = WasteRequestItem::find($record['waste_category_id']);
                     $item->actual_qty = $record['actual_qty'];
                     $item->save();
                 }
