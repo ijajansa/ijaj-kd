@@ -67,20 +67,23 @@
 					@else
 						<input type="hidden" value="{{auth()->user()->id}}" name="user_id">
 					@endif
+					
+					<!-- 							<div class="col-md-4">
+								<label class="form-label">Select Hajeri Shed</label>
+								<select class="multiple-select" class="form-control" id="shed_id" name="shed_id[]" data-placeholder="Choose anything" multiple="multiple" onchange="getArea1()" required>			
+								</select>
+							</div> -->
+							
 							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Select Ward</label>
-								<select class="form-control form-select" id="ward_id" required onchange="getArea1(this.value)" name="ward_id">
+								<select class="multiple-select" id="ward_id" required onchange="getArea1()" name="ward_id[]"  multiple="multiple">
 									<option value="">Select Ward</option>
 									@foreach($wards as $ward)
 									<option value="{{$ward->id}}">{{$ward->name}}</option>
 									@endforeach
 								</select>
 							</div>
-<!-- 							<div class="col-md-4">
-								<label class="form-label">Select Hajeri Shed</label>
-								<select class="multiple-select" class="form-control" id="shed_id" name="shed_id[]" data-placeholder="Choose anything" multiple="multiple" onchange="getArea1()" required>			
-								</select>
-							</div> -->
+
 							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Select Area</label>
 								<select class="multiple-select" required name="area_id[]" id="area_id" data-placeholder="Choose anything" multiple="multiple">
@@ -134,11 +137,12 @@
 
 <script type="text/javascript">
 
-	function getArea1(ward_id)
+	function getArea1()
 	{
-		// ward_id=$("#shed_id").val();
+		ward_id=$("#ward_id").val();
 		data=[];
 		data.push(ward_id);
+		
 		if(data.length!=0)
 		{
 			$.ajax({

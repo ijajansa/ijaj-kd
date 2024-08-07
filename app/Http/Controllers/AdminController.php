@@ -41,6 +41,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'name'=>'required',
+            'designation'=>'required',
             'email'=>'required|unique:users,email',
             'contact_number'=>'required|unique:users,contact_number|numeric|digits:10',
             'category_id'=>'required',
@@ -53,11 +54,12 @@ class AdminController extends Controller
         $user->email = $request->email ?? null;
         $user->role_id = 2;
         $user->contact_number = $request->contact_number ?? null;
-        $user->category_id = $request->category_id ?? null;
+        $user->designation = $request->designation ?? null;
+        $user->category_id = implode(',',$request->category_id) ?? null;
         $user->password = Hash::make($request->password);
         $user->save();
         $notification = array(
-            'message' => 'System user registered successfully',
+            'message' => 'HOD registered successfully',
             'alert-type' => 'success'
         );
         return redirect()->route('admins.index')->with($notification);
@@ -84,6 +86,24 @@ class AdminController extends Controller
     {
         $categories = Category::where('is_active',1)->get();
         $user = User::findOrFail($id);
+        if($user){
+            $cat = explode(',',$user->category_id);
+            if($cat!=null)
+            {
+                foreach($categories as $category)
+                {
+                    $category['is_present'] = 0;
+                    foreach($cat as $id)
+                    {
+                        if($category->id==$id)
+                        {
+                            $category['is_present'] = 1;        
+                        }
+                    }
+                }
+            }
+            
+        }
         return view('admin.edit',compact('user','categories'));
     }
 
@@ -98,6 +118,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'name'=>'required',
+            'designation'=>'required',
             'email'=>'required|unique:users,email,'.$id.'',
             'contact_number'=>'required|unique:users,contact_number,'.$id.',|numeric|digits:10',
             'category_id'=>'required',
@@ -109,13 +130,14 @@ class AdminController extends Controller
         $user->name = $request->name ?? null;
         $user->email = $request->email ?? null;
         $user->contact_number = $request->contact_number ?? null;
-        $user->category_id = $request->category_id ?? null;
+        $user->category_id = implode(',',$request->category_id) ?? null;
+        $user->designation = $request->designation ?? null;
         $user->is_active = $request->is_active ?? null;
         if($request->password !=null)
         $user->password = Hash::make($request->password);
         $user->save();
         $notification = array(
-            'message' => 'System user updated successfully',
+            'message' => 'HOD details updated successfully',
             'alert-type' => 'success'
         );
         return redirect()->route('admins.index')->with($notification);

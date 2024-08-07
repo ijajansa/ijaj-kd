@@ -15,7 +15,7 @@
 						<div class="card-title d-flex align-items-center">
 							<div><i class="bx bx-plus me-1 font-22 text-primary"></i>
 							</div>
-							<h5 class="mb-0 text-primary" style="font-weight: bold;">Add System User</h5>
+							<h5 class="mb-0 text-primary" style="font-weight: bold;">Add HOD</h5>
 						</div>
 						<hr>
 						<form class="row g-3" method="POST" action="{{route('admins.store')}}">
@@ -24,6 +24,16 @@
 								<label for="inputFirstName2" class="form-label">Name</label>
 								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" placeholder="Name">
 								@error('name')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+							</div>
+							
+							<div class="col-md-6">
+								<label for="inputFirstName2" class="form-label">Designation</label>
+								<input type="text" name="designation"  class="form-control @error('designation') is-invalid @enderror" value="{{old('designation')}}" placeholder="Designation">
+								@error('designation')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
                                                     </span>
@@ -50,7 +60,7 @@
 							</div>
 							<div class="col-md-6">
 								<label for="inputFirstName2" class="form-label">Select Category</label>
-								<select class="form-control form-select @error('category_id') is-invalid @enderror"  name="category_id">
+								<select class="form-control multiple-select form-select @error('category_id') is-invalid @enderror"  name="category_id[]" multiple="multiple">
 									<option value="">Select Category</option>
 									@foreach($categories as $category)
 									<option value="{{$category->id}}" @if(old('category_id')==$category->id) selected @endif>{{$category->name}}</option>
@@ -90,4 +100,15 @@
 
 <!--end page wrapper -->
 
+<script src="{{config('app.baseURL')}}/assets/plugins/select2/js/select2.min.js"></script>
+
+	<script>
+	
+		$('.multiple-select').select2({
+			theme: 'bootstrap4',
+			width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+			placeholder: $(this).data('placeholder'),
+			allowClear: Boolean($(this).data('allow-clear')),
+		});
+	</script>
 @endsection

@@ -10,10 +10,10 @@
 			<div class="page-content">
 				<div style="width: 100%;display: flex;">
 					<div style="width:50%">
-					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All Area</h6>					
+					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All QR</h6>					
 					</div>
 					<div style="width:50%">
-					<p align="right"><a href="{{config('app.baseURL')}}/barcode/add" class="btn btn-primary mb-lg-0"><i class='bx bxs-plus-square'></i>New Area</a>&nbsp;&nbsp;<a href="{{config('app.baseURL')}}/barcode/print-all" class="btn btn-danger mb-lg-0"><i class='bx bxs-download'></i>Print All</a></p>	
+					<p align="right"><a href="{{config('app.baseURL')}}/barcode/add" class="btn btn-primary mb-lg-0"><i class='bx bxs-plus-square'></i>Generate New QR</a>&nbsp;&nbsp;<a href="{{config('app.baseURL')}}/barcode/print-all" class="btn btn-danger mb-lg-0"><i class='bx bxs-download'></i>Print All</a></p>	
 					</div>
 				</div>
 				<hr/>
@@ -36,7 +36,9 @@
 									</tr>
 								</thead>
 								<tbody>
-									
+									@php
+									$generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
+									@endphp
 									@foreach($data as $key=>$datas)
 									<tr>
 										<td>{{++$key}}</td>
@@ -46,7 +48,10 @@
 										<td>{{$datas?->user?->name ?? '-'}}</td>
 										@endif
 										<td>
-										  {{"QR Code"}}
+										    <!--{{$datas->address}}-->
+											<?php $ans="Id :".$datas->id."\nAddress :";?>
+											 {!! QrCode::size(80)->generate($ans) !!}
+
 										</td>
 										<td>
 											<div class="d-flex order-actions">

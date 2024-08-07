@@ -361,7 +361,7 @@ class CustomerController extends Controller
         $data->email=$request->email ?? null;
         $data->mobile_number=$request->mobile_number;
         $data->address=$request->address;
-        $data->ward_id=$request->ward_id;
+        $data->ward_id=implode(',',$request->ward_id);
         $data->user_id=$request->user_id;
         // $data->shed_id=implode(',',$request->shed_id);
         $data->category_id=$category->category_id ?? 0;
@@ -389,21 +389,20 @@ class CustomerController extends Controller
     {
         $data=Customer::find($id);
         $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
-        $wards=Ward::where('is_active',1)->get();
-        // $sheds=HajeriShed::where('ward_id',$data->ward_id)->get();
-        // foreach ($sheds as $key => $value) {
-        //     $value['is_present']=0;
-        //     if($data->shed_id!=null)
-        //     {
-        //         $hajeri=explode(',',$data->shed_id);
-        //         foreach ($hajeri as $key1 => $value1) {
-        //             if($value1==$value->id)
-        //             {
-        //                 $value['is_present']=1;
-        //             }            
-        //         }                
-        //     }
-        // }
+        $wards=Ward::where('is_active',1)->where('user_id',$data->user_id)->get();
+        foreach ($wards as $key => $value) {
+            $value['is_present']=0;
+            if($data->ward_id!=null)
+            {
+                $hajeri=explode(',',$data->ward_id);
+                foreach ($hajeri as $key1 => $value1) {
+                    if($value1==$value->id)
+                    {
+                        $value['is_present']=1;
+                    }            
+                }                
+            }
+        }
 
         $areas=Bar::where('ward_id',$data->ward_id)->get();
         foreach ($areas as $key => $area) {
@@ -461,7 +460,7 @@ class CustomerController extends Controller
         $data->mobile_number=$request->mobile_number;
         $data->address=$request->address;
         $data->is_active=$request->status;
-        $data->ward_id=$request->ward_id;
+        $data->ward_id=implode(',', $request->ward_id);
         $data->user_id=$request->user_id;
         $data->category_id=$category->category_id ?? 0;
         $data->area_id=implode(',', $request->area_id);
@@ -477,7 +476,7 @@ class CustomerController extends Controller
     {
         $html="";
         $html.='<option value="">Select Area</option>';
-        $datas=Bar::where('ward_id',$request->ward_id)->get();
+        $datas=Bar::whereIn('ward_id',$request->ward_id)->get();
         if($datas)
         {
             foreach ($datas as $key => $data) {

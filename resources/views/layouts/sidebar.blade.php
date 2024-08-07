@@ -43,7 +43,7 @@
                     <a href="{{config('app.baseURL')}}/barcode/all">
                         <div class="parent-icon"><i class='bx bx-folder'></i>
                         </div>
-                        <div class="menu-title">All Areas</div>
+                        <div class="menu-title">QR Code Generator</div>
                     </a>
                 </li>
 
@@ -54,7 +54,7 @@
                     <a href="{{route('admins.index')}}">
                         <div class="parent-icon"><i class='bx bx-user-plus'></i>
                         </div>
-                        <div class="menu-title">All System Admin</div>
+                        <div class="menu-title">All HOD</div>
                     </a>
                 </li>
                 @endif
@@ -72,7 +72,7 @@
 						</div>
 						<div class="menu-title">Waste Manageme.</div>
 					</a>
-					<ul class="mm-collapse" style="height: 0px;">
+					<ul class="mm-collapse">
                         @if(auth()->user()->role_id==1)
 						<li> <a href="{{route('products.index')}}"><i class="bx bx-radio-circle"></i>Waste Products</a>
 						</li>
@@ -87,7 +87,7 @@
 						</div>
 						<div class="menu-title">Employee Section</div>
 					</a>
-					<ul class="mm-collapse" style="height: 0px;">
+					<ul class="mm-collapse">
 						<li> <a href="{{config('app.baseURL')}}/user/all"><i class="bx bx-user"></i>All Inspector</a>
 						</li>
 						<li> <a href="{{config('app.baseURL')}}/employee/all"><i class="bx bx-user-plus"></i>All Employee</a>

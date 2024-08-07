@@ -70,10 +70,10 @@
 							@endif
 							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Select Ward</label>
-								<select class="form-control form-select" required onchange="getArea1(this.value)" id="ward_id" name="ward_id">
+								<select class="multiple-select" required onchange="getArea1()" id="ward_id" name="ward_id[]" multiple="multiple">
 									<option value="">Select Ward</option>
 									@foreach($wards as $ward)
-									<option value="{{$ward->id}}" @if($ward->id==$data->ward_id) selected @endif>{{$ward->name}}</option>
+									<option value="{{$ward->id}}" @if($ward->is_present==1) selected @endif>{{$ward->name}}</option>
 									@endforeach
 								</select>
 							</div>
@@ -122,11 +122,12 @@
 
 <script type="text/javascript">
 
-	function getArea1(ward_id)
+    function getArea1()
 	{
-		// ward_id=$("#shed_id").val();
+		ward_id=$("#ward_id").val();
 		data=[];
 		data.push(ward_id);
+		
 		if(data.length!=0)
 		{
 			$.ajax({
@@ -141,6 +142,7 @@
 			});
 		}
 	}
+
 </script>
 
 <script src="{{config('app.baseURL')}}/assets/plugins/select2/js/select2.min.js"></script>

@@ -5,10 +5,10 @@
 			<div class="page-content">
 				<div style="width: 100%;display: flex;">
 					<div style="width:50%">
-					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All System User</h6>					
+					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All HOD</h6>					
 					</div>
 					<div style="width:50%">
-					<p align="right"><a href="{{route('admins.create')}}" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>Add New User</a></p>	
+					<p align="right"><a href="{{route('admins.create')}}" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>Add New HOD</a></p>	
 					</div>
 				</div>
 				<hr/>
@@ -24,7 +24,7 @@
 										<th>Name</th>
 										<th>Email</th>
 										<th>Mobile Number</th>
-										<th>Category</th>
+										<th>Designation</th>
 										<th>Created At</th>
 										<th>Status</th>
 										<th>Action</th>
@@ -37,7 +37,7 @@
 										<td>{{$data->name}}</td>
 										<td>{{$data->email}}</td>
 										<td>{{$data->contact_number ?? ''}}</td>
-										<td>{{$data->category_name?? ''}}</td>
+										<td>{{$data->designation?? '-'}}</td>
 										<td>{{$data->created_at?->format('Y/m/d')}}</td>
 										<td>@if($data->is_active==1)
 											<div class="badge rounded-pill text-success bg-light-success p-2 text-uppercase px-3"><i class="bx bxs-circle me-1"></i>Active</div>

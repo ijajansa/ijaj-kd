@@ -22,7 +22,7 @@
 						<div class="row">
 							<div class="col-md-2">
 								<label for="inputFirstName2" class="form-label">Inspector Name</label>
-								<input type="text" name="email" class="form-control" readonly @if($data->user->role_id==2) value="{{$data->mukadam->name??''}}" @else  value="{{$data->user->name??''}}"  @endif id="inputFirstName2" required>
+								<input type="text" name="email" class="form-control" readonly @if($data->user->role_id==2) value="{{$data?->mukadam?->name??''}}" @else  value="{{$data?->user?->name??''}}"  @endif id="inputFirstName2" required>
 							</div>
 
 							@if($data->user->role_id==2)

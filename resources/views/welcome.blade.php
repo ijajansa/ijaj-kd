@@ -23,7 +23,7 @@
                                 <div class="card-body">
                                     <div class="p-4 rounded">
                                         <div class="text-center">
-                                            <h3 class="">GVP Monitoring System</h3>
+                                            <h3 class="">Monitoring System</h3>
                                             </p>
                                         </div>
 
