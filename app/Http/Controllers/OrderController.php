@@ -7,6 +7,7 @@ use Storage;
 use App\Models\Bar;
 use App\Models\User;
 use App\Models\Ward;
+use App\Models\Category;
 use App\Models\HajeriShed;
 use Illuminate\Http\Request;
 use Picqer\Barcode\BarcodeGeneratorPNG;
@@ -58,14 +59,9 @@ class OrderController extends Controller
 
     public function addBarcodePage()
     {
-        if(auth()->user()->role_id==1)
-        $data=Ward::where('is_active',1)->get();
-        else
-        $data=Ward::where('is_active',1)->where('user_id',auth()->user()->id)->get();
-        
-        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
-
-        return view('order.add',compact('users'))->with('data',$data);
+        $wards = Ward::where('is_active',1)->get();
+        $categories = Category::where('is_active',1)->get();
+        return view('order.add',compact('categories','wards'));
     }
 
     public function deleteBarcode($id)
