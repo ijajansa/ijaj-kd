@@ -25,11 +25,10 @@
 								<thead>
 									<tr>
 										<th>Sr No.</th>
+										<th>Name</th>
 										<th>Address</th>
 										<th>Ward Name</th>
-										@if(auth()->user()->role_id==1)
-										<th>System User</th>
-										@endif
+		
 										<th>QR Code</th>
 										<th>Print</th>
 										<th>Action</th>
@@ -42,13 +41,11 @@
 									@foreach($data as $key=>$datas)
 									<tr>
 										<td>{{++$key}}</td>
-										<td>{{$datas->address}}</td>
+										<td>{{$datas->name??'-'}}</td>
+										<td>{{$datas->address??'-'}}</td>
 										<td>{{$datas->ward->name ?? '-'}}</td>
-										@if(auth()->user()->role_id==1)
-										<td>{{$datas?->user?->name ?? '-'}}</td>
-										@endif
+										
 										<td>
-										    <!--{{$datas->address}}-->
 											<?php $ans="Id :".$datas->id."\nAddress :";?>
 											 {!! QrCode::size(80)->generate($ans) !!}
 

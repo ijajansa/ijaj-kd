@@ -82,22 +82,26 @@ class OrderController extends Controller
 
     public function addBarcode(Request $request)
     {
-        $data="Address :".$request->address."";
         // $generator = new BarcodeGeneratorPNG();
         // $barcode = '< img src="data:image/png;base64,' . base64_encode($generator->getBarcode($data, $generator::TYPE_CODE_128)) . '" >';
 
         // $generator = new BarcodeGeneratorPNG();
         // $barcode = '< img src="data:image/png;base64,' . base64_encode($generator->getBarcode($data, $generator::TYPE_CODE_128)) . '" >';
 
-
-        $add=new Bar();
-        $add->address=$request->address;
-        $add->ward_id=$request->ward_id;
-        $add->user_id=$request->user_id;
-        $add->shed_id=$request->shed_id;
-        // $add->details=$request->details;
-        // $add->barcode=$barcode;
-        $add->save();
+        if($request->category_id!=null)
+        {
+            foreach($request->category_id as $key=>$id)
+            {                
+                $add=new Bar();
+                $add->address=$request->address[$key];
+                $add->name=$request->name[$key];
+                $add->ward_id=$request->ward_id;
+                $add->category_id=Category::where('name',$id)->first()?->id;
+                $add->user_id=$request->user_id;
+                $add->shed_id=$request->shed_id;
+                $add->save();
+            }
+        }
         $notification = array(
             'message' => 'Record Added Successfully !',
             'alert-type' => 'success'

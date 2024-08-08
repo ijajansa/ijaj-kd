@@ -35,10 +35,10 @@
 							</div>
 							 <div class="col-md-12">
 								<label for="inputFirstName2" class="form-label">Select Category <span class="text-danger" style="font-weight: bold;">*</span></label>
-								<select class="form-control form-select" id="category_id" name="category_id" onchange="getFields(0,this.value)" required>
+								<select class="form-control form-select" id="category_id" name="category_id[]" onchange="getFields(0,this.value)" required>
 									<option value="">Select</option>
 									@foreach($categories as $category)
-									<option value="{{$category->id}}|{{$category->name}}">{{$category->name}}</option>
+									<option value="{{$category->name}}">{{$category->name}}</option>
 									@endforeach
 								</select>
 							</div>
@@ -69,10 +69,10 @@
 	{
 		data = '<div class="row" style="padding:5px 0"><div class="col-md-12">\
 								<label for="inputFirstName2" class="form-label">Select Category <span class="text-danger" style="font-weight: bold;">*</span></label>\
-								<select class="form-control form-select" id="category_id" name="category_id" onchange=getFields('+number+',this.value) required>\
+								<select class="form-control form-select" id="category_id" name="category_id[]" onchange=getFields('+number+',this.value) required>\
 									<option value="">Select</option>\
 									@foreach($categories as $category)\
-									<option value="{{$category->id}}|{{$category->name}}">{{$category->name}}</option>\
+									<option value="{{$category->name}}">{{$category->name}}</option>\
 									@endforeach\
 								</select>\
 							</div></div><div id="mainCont'+number+'"></div>';
@@ -83,17 +83,16 @@
 	function getFields(number,value)
 	{
 		if (value) {
-        const [categoryId, categoryName] = value.split('|');
-		var categoryName2 = categoryName;
+		var categoryName2 = value;
         // You can now use both the category ID and name in your function
     }
 		data = '<div class="row" style="padding:5px 0"><div class="col-md-5">\
 			<label for="inputFirstName2" class="form-label">'+categoryName2+' Name <span class="text-danger" style="font-weight: bold;">*</span></label>\
-								<input type="text" name="name" class="form-control" id="inputFirstName2" required>\
+								<input type="text" name="name[]" class="form-control" id="inputFirstName2" required>\
 							</div>\
 							<div class="col-md-5">\
 								<label for="inputFirstName2" class="form-label">Address <span class="text-danger" style="font-weight: bold;">*</span></label>\
-								<input type="text" name="address" class="form-control" id="inputFirstName2" required>\
+								<input type="text" name="address[]" class="form-control" id="inputFirstName2" required>\
 							</div>\
 							<div class="col-md-2">\
 								<label for="" style="opacity: 0;display:block"  class="form-label">button</label>\
