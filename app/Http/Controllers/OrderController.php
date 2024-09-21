@@ -50,10 +50,7 @@ class OrderController extends Controller
 
     public function allBarcode()
     {
-        if(auth()->user()->role_id==1)
-        $data=Bar::with('ward')->orderBy('id','DESC')->where('is_delete',0)->get();
-        else
-        $data=Bar::with('ward')->orderBy('id','DESC')->where('user_id',auth()->user()->id)->where('is_delete',0)->get();
+        $data=Bar::with('category')->orderBy('id','DESC')->where('is_delete',0)->get();
         return view('order.all')->with('data',$data);
     }
 
@@ -66,17 +63,26 @@ class OrderController extends Controller
 
     public function deleteBarcode($id)
     {
-        $data=Bar::where('id',$id)->first();
-        if($data)
+        if(auth()->user()->role_id==1)
         {
-            $data->is_delete = 1;
-            $data->save();
+            $data=Bar::where('id',$id)->first();
+            if($data)
+            {
+                $data->is_delete = 1;
+                $data->save();
+            }
+            
+            $notification = array(
+                'message' => 'Record Deleted Successfully !',
+                'alert-type' => 'success'
+            );    
         }
-        
+        else
         $notification = array(
-            'message' => 'Record Deleted Successfully !',
-            'alert-type' => 'success'
-        );
+                'message' => "Don't have permission to delete !",
+                'alert-type' => 'error'
+            );    
+        
         return redirect()->back()->with($notification);
     }
 

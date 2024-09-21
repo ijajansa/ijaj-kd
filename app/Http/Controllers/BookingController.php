@@ -332,6 +332,7 @@ class BookingController extends Controller
 
 
             $data->barcode_id=$request->barcode_id ?? 0;
+            $data->category_id=$request->category_id ?? 0;
             $data->customer_id=$request->customer_id ?? 0;
             $data->inspector_id=$request->inspector_id ?? 0;
             
@@ -378,16 +379,17 @@ class BookingController extends Controller
     {
         $html='<table border="1">
         <tr>
-        <th colspan="28"><h3>MANCHAR NAGARPANCHAYAT Report Data</h3></th>
+        <th colspan="29"><h3>VITA MUNICIPAL COUNCIL Report Data</h3></th>
         </tr>
         <tr>
         <th>Date</th>
         <th>Time</th>
         <th>QRCode ID</th>
+        <th>Category Name</th>
         <th>Ward Name</th>
         <th>Area Name</th>
-        <th>Incharge Person</th>
-        <th>Mukadam Name</th>
+        <th>HOD Name</th>
+        <th>Supervisor Name</th>
         <th>Morning Before Work</th>
         <th>Morning Before Time</th>
         <th>Morning After Work</th>
@@ -463,6 +465,10 @@ class BookingController extends Controller
             <td>'.$rtos->created_at->format('Y-m-d').'</td>
             <td>'.$rtos->created_at->format('H:i').'</td>
             <td>'.$rtos->barcode_id.'</td>';
+            if($rtos->category_id !=null && $rtos->category!=null)
+            $html.='<td>'.$rtos->category->name.'</td>';
+            else
+            $html.='<td>-</td>';
             
             if($rtos->barcode != null)
             {
@@ -541,8 +547,8 @@ class BookingController extends Controller
 
             if($customer)
             {
-                $array=explode(',',$customer->area_id);
-                if(in_array($request->barcode_id, $array))
+                $array=explode(',',$customer->category_id);
+                if(in_array($request->category_id, $array))
                 {
                     return response(['success'=>true,'message'=>'Barcode Assigned']);
                 }

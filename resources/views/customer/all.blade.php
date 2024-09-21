@@ -5,10 +5,10 @@
 			<div class="page-content">
 				<div style="width: 100%;display: flex;">
 					<div style="width:50%">
-					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All Inspectors</h6>					
+					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All HOD</h6>					
 					</div>
 					<div style="width:50%">
-					<p align="right"><a href="{{config('app.baseURL')}}/user/add" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>Add New Inspector</a></p>	
+					<p align="right"><a href="{{config('app.baseURL')}}/user/add" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>Add New HOD</a></p>	
 					</div>
 				</div>
 				<hr/>
@@ -21,13 +21,12 @@
 								<thead>
 									<tr>
 										<th>Sr No.</th>
-										@if(auth()->user()->role_id==1)
-										<th>Category</th>
-										@endif
+										
 										<th>Name</th>
 										<th>Email</th>
 										<th>Mobile Number</th>
-										<th>Address</th>
+										<th>Designation</th>
+										<!--<th>Address</th>-->
 										@if(auth()->user()->role_id!=1)
 										<th>Created At</th>
 										@endif
@@ -39,13 +38,12 @@
 									@foreach($user as $key=>$datas)
 									<tr>
 										<td>{{++$key}}</td>
-										@if(auth()->user()->role_id==1)
-										<td>{{$datas->category_name}}</td>
-										@endif
+										
 										<td>{{$datas->name}}</td>
 										<td>{{$datas->email}}</td>
 										<td>{{$datas->mobile_number}}</td>
-										<td>{{$datas->address}}</td>
+										<td>{{$datas->designation}}</td>
+										<!--<td>{{$datas->address}}</td>-->
 										@if(auth()->user()->role_id!=1)
 										<td>{{$datas->updated_at->format('Y/m/d')}}</td>
 										@endif
@@ -58,7 +56,9 @@
 										<td>
 											<div class="d-flex order-actions">
 												<a href="{{config('app.baseURL')}}/user/view/{{$datas->id}}" class=""><i class='bx bxs-edit'></i></a>
+												@if(auth()->user()->role_id==1)
 												<a href="{{config('app.baseURL')}}/user/delete/{{$datas->id}}"  class="ms-3"><i class='bx bxs-trash'></i></a>
+												@endif
 											</div>
 										</td>
 									</tr>

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/admin', function () {
+Route::get('/', function () {
     if(!auth()->user())
     {
         return view('auth.login');
@@ -24,16 +24,16 @@ Route::get('/admin', function () {
         return redirect()->back();
     }
 });
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/login', function () {
+//     return view('auth.login');
+// });
 
 Route::get('/migrate', function () {
     \Artisan::call('optimize:clear');
-    \Artisan::call('migrate');
+    // \Artisan::call('migrate --path=database/migrations/2024_08_31_041947_add_deleted_at_in_wards_table.php');
     return redirect()->back();
 });
-Route::post('user-login', [App\Http\Controllers\Auth\LoginController::class, 'userLogin']);
+// Route::post('user-login', [App\Http\Controllers\Auth\LoginController::class, 'userLogin']);
 
 
 Auth::routes();
@@ -70,9 +70,24 @@ Route::get('view/{id}',['middleware'=>'auth','uses'=>'CustomerController@editEmp
 
 Route::resource('admins', 'AdminController')->middleware(['auth','super.admin']);
 Route::resource('customers', 'UserController')->middleware(['auth','super.admin']);
-Route::resource('categories', 'CategoryController')->middleware(['auth','super.admin']);
-Route::resource('products', 'ProductController')->middleware(['auth','super.admin']);
-Route::resource('waste-requests', 'WasteRequestController')->middleware(['auth','super.admin']);
+Route::resource('categories', 'CategoryController')->middleware(['auth']);
+Route::resource('products', 'ProductController')->middleware(['auth']);
+Route::resource('waste-requests', 'WasteRequestController')->middleware(['auth']);
+
+Route::get('cd-collections',['uses'=>'CDController@index'])->middleware(['auth','super.admin']);
+Route::get('cd-processed', 'CDController@index2')->middleware(['auth','super.admin']);
+Route::get('cd-processed/add', 'CDController@create')->middleware(['auth','super.admin']);
+Route::post('cd-processed/add', 'CDController@store')->middleware(['auth','super.admin']);
+Route::get('cd-processed/export-excel',['middleware'=>'auth','uses'=>'CDController@exportExcel']);
+Route::get('cd-processed/export-pdf',['middleware'=>'auth','uses'=>'CDController@exportPDF']);
+
+
+Route::get('e-collections',['uses'=>'EwasteController@index'])->middleware(['auth','super.admin']);
+Route::get('e-processed', 'EwasteController@index2')->middleware(['auth','super.admin']);
+Route::get('e-processed/add', 'EwasteController@create')->middleware(['auth','super.admin']);
+Route::post('e-processed/add', 'EwasteController@store')->middleware(['auth','super.admin']);
+Route::get('e-processed/export-excel',['middleware'=>'auth','uses'=>'EwasteController@exportExcel']);
+
 
 Route::group(['prefix'=>'barcode'],function(){
 Route::get('all',['middleware'=>'auth','uses'=>'OrderController@allBarcode']);
@@ -110,6 +125,8 @@ Route::get('all',['middleware'=>'auth','uses'=>'BookingController@getAllReports'
 Route::get('allData',['middleware'=>'auth','uses'=>'BookingController@getAllReportsData']);
 Route::get('export-excel',['middleware'=>'auth','uses'=>'BookingController@exportExcel']);
 });
+
+
 
 Route::group(['prefix'=>'offer'],function(){
 Route::get('add',['middleware'=>'auth','uses'=>'BookingController@getAddOffer']);

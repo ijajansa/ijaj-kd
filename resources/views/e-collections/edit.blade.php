@@ -112,9 +112,9 @@
 								</table>
 							</div>
 							@endif
-							<!--	<div class="col-12">-->
-							<!--	<button type="submit" class="btn btn-primary px-5">Update</button>-->
-							<!--</div>-->
+								<div class="col-12">
+								<button type="submit" class="btn btn-primary px-5">Update</button>
+							</div>
 						</form>
 					</div>
 				</div>

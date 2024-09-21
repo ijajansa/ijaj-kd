@@ -14,11 +14,8 @@ class WardController extends Controller
     public function allWard()
     {
 		$users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
-    	if(auth()->user()->role_id==1)
 		$datas=Ward::orderBy('id','DESC')->get();
-		else
-		$datas=Ward::where('user_id',auth()->user()->id)->orderBy('id','DESC')->get();
-
+		
     	return view('ward.all',compact('users'))->with('datas',$datas);
     }
 
@@ -33,6 +30,7 @@ class WardController extends Controller
     {
     	$data=new Ward();
     	$data->name=$request->ward_name;
+    	$data->ward_number=$request->ward_number;
     	$data->user_id=$request->user_id;
     	$data->save();
 
@@ -46,11 +44,20 @@ class WardController extends Controller
 
     public function deleteWard($id)
     {
-    	$data=Ward::find($id)->delete();
-    	$notification = array(
-            'message' => 'Ward Deleted Successfully !',
-            'alert-type' => 'success'
-        );
+        if(auth()->user()->role_id==1)
+        {
+            $data=Ward::find($id)->delete();
+        	$notification = array(
+                'message' => 'Ward Deleted Successfully !',
+                'alert-type' => 'success'
+            );    
+        }
+        else
+        $notification = array(
+                'message' => "Don't have permission to delete !",
+                'alert-type' => 'error'
+            );    
+    	
 
     	return redirect()->back()->with($notification);
 
@@ -63,6 +70,7 @@ class WardController extends Controller
     	{
     		$data->name=$request->name;
     		$data->user_id=$request->user_id;
+    		$data->ward_number=$request->ward_number;
     		$data->is_active=$request->status;
     		$data->save();
 

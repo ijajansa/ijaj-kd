@@ -15,31 +15,36 @@
 						<hr>
 						<form method="POST" action="{{config('app.baseURL')}}/wards/edit/{{$data->id}}" class="row g-3">
 							@csrf
-
-							<div class="col-12">
+							<div class="col-6">
+								<label for="inputLastName1" class="form-label">Ward Number</label>
+								<div class="input-group"> <span class="input-group-text bg-transparent"><i class='bx bxs-folder'></i></span>
+									<input type="text" value="{{$data->ward_number}}" class="form-control border-start-0" id="name" placeholder="Ward Number" name="ward_number" required />
+								</div>
+							</div>
+							<div class="col-6">
 								<label for="inputLastName1" class="form-label">Ward Name</label>
 								<div class="input-group"> <span class="input-group-text bg-transparent"><i class='bx bxs-user'></i></span>
 									<input type="text" value="{{$data->name}}" class="form-control border-start-0" id="name" placeholder="Ward Name" name="name" required />
 								</div>
 							</div>
-					@if(auth()->user()->role_id==1)
-						<div class="col-xl-12">
-						<label class="form-label blog-label">System User</label>
-						<select name="user_id" required class="form-control form-select @error('user_id') is-invalid @enderror" id="inputCat">
-							<option value="">Select User</option>
-							@foreach($users as $user)
-							<option value="{{$user->id}}" @if(old('user_id',$data->user_id)==$user->id) selected @endif>{{$user->name}} {{" - ".$user->category_name}}</option>
-							@endforeach
-						</select>
-						@error('user_id')
-						<span class="invalid-feedback" role="alert">
-							<strong>{{ $message }}</strong>
-						</span>
-						@enderror
-						</div>
-					@else
-						<input type="hidden" value="{{auth()->user()->id}}" name="user_id">
-						@endif
+					<!--@if(auth()->user()->role_id==1)-->
+					<!--	<div class="col-xl-12">-->
+					<!--	<label class="form-label blog-label">System User</label>-->
+					<!--	<select name="user_id" required class="form-control form-select @error('user_id') is-invalid @enderror" id="inputCat">-->
+					<!--		<option value="">Select User</option>-->
+					<!--		@foreach($users as $user)-->
+					<!--		<option value="{{$user->id}}" @if(old('user_id',$data->user_id)==$user->id) selected @endif>{{$user->name}} {{" - ".$user->category_name}}</option>-->
+					<!--		@endforeach-->
+					<!--	</select>-->
+					<!--	@error('user_id')-->
+					<!--	<span class="invalid-feedback" role="alert">-->
+					<!--		<strong>{{ $message }}</strong>-->
+					<!--	</span>-->
+					<!--	@enderror-->
+					<!--	</div>-->
+					<!--@else-->
+					<!--	<input type="hidden" value="{{auth()->user()->id}}" name="user_id">-->
+					<!--	@endif-->
 							<div class="col-12">
 								<label for="inputLastName1" class="form-label">Status</label>
 								<select name="status" class="form-control form-select">

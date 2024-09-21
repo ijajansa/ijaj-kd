@@ -25,10 +25,9 @@
 								<thead>
 									<tr>
 										<th>Sr No.</th>
+										<th>Category</th>
 										<th>Name</th>
 										<th>Address</th>
-										<th>Ward Name</th>
-		
 										<th>QR Code</th>
 										<th>Print</th>
 										<th>Action</th>
@@ -41,12 +40,11 @@
 									@foreach($data as $key=>$datas)
 									<tr>
 										<td>{{++$key}}</td>
+										<td>{{$datas->category->name ?? '-'}}</td>
 										<td>{{$datas->name??'-'}}</td>
 										<td>{{$datas->address??'-'}}</td>
-										<td>{{$datas->ward->name ?? '-'}}</td>
-										
 										<td>
-											<?php $ans="Id :".$datas->id."\nAddress :";?>
+											<?php $ans="Id :".$datas->id."\nName :".$datas->name."\nCategory :".$datas->category_id;?>
 											 {!! QrCode::size(80)->generate($ans) !!}
 
 										</td>
@@ -59,11 +57,13 @@
 											</div>
 										</td>
 										<td>
+										    @if(auth()->user()->role_id==1)
 											<div class="d-flex order-actions">
 									
 												<a href="{{config('app.baseURL')}}/barcode/delete/{{$datas->id}}" class="ms-3"><i class='bx bxs-trash text-danger'></i></a>
 												
 											</div>
+											@endif
 										</td>
 									</tr>
 									@endforeach

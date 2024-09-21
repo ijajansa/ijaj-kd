@@ -17,7 +17,7 @@ class WasteRequestController extends Controller
      */
     public function index()
     {
-        $data = WasteRequest::leftJoin('categories','categories.id','waste_requests.category_id')->select('waste_requests.*','categories.name as category_name')->get();
+        $data = WasteRequest::leftJoin('categories','categories.id','waste_requests.category_id')->where('waste_requests.status','!=',4)->select('waste_requests.*','categories.name as category_name')->get();
         return view('waste-requests.all',compact('data'));
     }
 
@@ -64,7 +64,13 @@ class WasteRequestController extends Controller
         $data = WasteRequest::where('uuid',$uuid)->first();
         if($data)
         {
-            $employees = Customer::where('category_id',$data->category_id)->get();
+            $employees = Customer::get()->map(function($record) use ($data){
+                $categories = explode(',',$record->category_id);
+                if(in_array($data->category_id, $categories))
+                {
+                    return $record;
+                }
+            })->filter();
             $data['waste_items'] = WasteRequestItem::where('request_id',$data->id)->get();
         }
         return view('waste-requests.edit',compact('data','employees'));

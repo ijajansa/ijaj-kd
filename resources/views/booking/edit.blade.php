@@ -21,24 +21,24 @@
 						<hr>
 						<div class="row">
 							<div class="col-md-2">
-								<label for="inputFirstName2" class="form-label">Inspector Name</label>
-								<input type="text" name="email" class="form-control" readonly @if($data->user->role_id==2) value="{{$data?->mukadam?->name??''}}" @else  value="{{$data?->user?->name??''}}"  @endif id="inputFirstName2" required>
+								<label for="inputFirstName2" class="form-label">HOD Name</label>
+								<input type="text" name="email" class="form-control" readonly @if($data?->user?->role_id==2) value="{{$data?->mukadam?->name??''}}" @else  value="{{$data?->user?->name??''}}"  @endif id="inputFirstName2" required>
 							</div>
 
-							@if($data->user->role_id==2)
+							@if($data?->user?->role_id==2)
 							<div class="col-md-2">
-								<label for="inputFirstName2" class="form-label">Mukadam Name</label>
+								<label for="inputFirstName2" class="form-label">Supervisor Name</label>
 								<input type="text" name="email" class="form-control" readonly value="{{$data->user->name??''}}" id="inputFirstName2" required>
 							</div>
 							@endif
 
-<!-- 							<div class="col-md-2">
-								<label for="inputFirstName2" class="form-label">Hajeri Shed</label>
-								<input type="text" name="email" class="form-control" readonly value="{{$data->barcode->hajeri->hajeri_shed??''}}" id="inputFirstName2" required>
-							</div> -->
 
 							<div class="col-md-2">
-								<label for="inputState" class="form-label">Area Name</label>
+								<label for="inputState" class="form-label">Category</label>
+								<input type="text" name="podate" class="form-control" readonly value="{{$data?->category?->name??0}}" id="inputState">
+							</div>
+							<div class="col-md-2">
+								<label for="inputState" class="form-label">Address</label>
 								<input type="text" name="podate" class="form-control" readonly value="{{$data->barcode->address??''}}" id="inputState">
 							</div>
 

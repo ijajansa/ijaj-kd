@@ -21,7 +21,6 @@
                     </a>
                 </li>
                 
-                @if(auth()->user()->role_id==1)
                 <li>
                     <a href="{{route('categories.index')}}">
                         <div class="parent-icon"><i class='bx bx-category'></i>
@@ -29,8 +28,7 @@
                         <div class="menu-title">All Category</div>
                     </a>
                 </li>
-                @endif
-                
+
                 <li>
                     <a href="{{config('app.baseURL')}}/wards/all">
                         <div class="parent-icon"><i class='bx bx-menu'></i>
@@ -49,16 +47,6 @@
 
                 
 
-                @if(auth()->user()->role_id==1)
-                <li>
-                    <a href="{{route('admins.index')}}">
-                        <div class="parent-icon"><i class='bx bx-user-plus'></i>
-                        </div>
-                        <div class="menu-title">All HOD</div>
-                    </a>
-                </li>
-                @endif
-               
                 <li>
                     <a href="{{config('app.baseURL')}}/report/all">
                         <div class="parent-icon"><i class='bx bx-menu'></i>
@@ -66,21 +54,7 @@
                         <div class="menu-title">Inspection Reports</div>
                     </a>
                 </li>
-                <li>
-					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
-						<div class="parent-icon"><i class="bx bx-cube"></i>
-						</div>
-						<div class="menu-title">Waste Manageme.</div>
-					</a>
-					<ul class="mm-collapse">
-                        @if(auth()->user()->role_id==1)
-						<li> <a href="{{route('products.index')}}"><i class="bx bx-radio-circle"></i>Waste Products</a>
-						</li>
-						<li> <a href="{{route('waste-requests.index')}}"><i class="bx bx-radio-circle"></i>Waste Requests</a>
-						</li>
-                        @endif
-					</ul>
-				</li>
+                
                 <li>
 					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
 						<div class="parent-icon"><i class="bx bx-user-plus"></i>
@@ -88,9 +62,56 @@
 						<div class="menu-title">Employee Section</div>
 					</a>
 					<ul class="mm-collapse">
-						<li> <a href="{{config('app.baseURL')}}/user/all"><i class="bx bx-user"></i>All Inspector</a>
+						<li> <a href="{{config('app.baseURL')}}/user/all"><i class="bx bx-user"></i>All HOD</a>
 						</li>
-						<li> <a href="{{config('app.baseURL')}}/employee/all"><i class="bx bx-user-plus"></i>All Employee</a>
+						<li> <a href="{{config('app.baseURL')}}/employee/all"><i class="bx bx-user-plus"></i>All Supervisor</a>
+						</li>
+						@if(auth()->user()->role_id==1)
+						<li> <a href="{{config('app.baseURL')}}/admins"><i class="bx bx-user"></i>Subadmin</a>
+						</li>
+						@endif
+					</ul>
+				</li>
+				<li>
+					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+						<div class="parent-icon"><i class="bx bx-cube"></i>
+						</div>
+						<div class="menu-title">Waste Manageme.</div>
+					</a>
+					<ul class="mm-collapse">
+						<li> <a href="{{route('products.index')}}"><i class="bx bx-radio-circle"></i>Waste Products</a>
+						</li>
+						<li> <a href="{{route('waste-requests.index')}}"><i class="bx bx-radio-circle"></i>Waste Requests</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+						<div class="parent-icon"><i class="bx bx-folder"></i>
+						</div>
+						<div class="menu-title">C&D Report</div>
+					</a>
+					<ul class="mm-collapse">
+						<li> <a href="{{url('cd-collections')}}"><i class="bx bx-user"></i>All Collection</a>
+						</li>
+						<li> <a href="{{url('cd-processed/add')}}"><i class="bx bx-user-plus"></i>Add New Processing</a>
+						</li>
+						<li> <a href="{{url('cd-processed')}}"><i class="bx bx-user-plus"></i>All Processed</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+						<div class="parent-icon"><i class="bx bx-folder"></i>
+						</div>
+						<div class="menu-title">E-Waste Report</div>
+					</a>
+					<ul class="mm-collapse">
+						<li> <a href="{{url('e-collections')}}"><i class="bx bx-user"></i>All Collection</a>
+						</li>
+						<li> <a href="{{url('e-processed/add')}}"><i class="bx bx-user-plus"></i>Add New Processing</a>
+						</li>
+						<li> <a href="{{url('e-processed')}}"><i class="bx bx-user-plus"></i>All Processed</a>
 						</li>
 					</ul>
 				</li>

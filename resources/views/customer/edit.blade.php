@@ -32,77 +32,86 @@
 						<div class="card-title d-flex align-items-center">
 							<div><i class="bx bx-edit me-1 font-22 text-primary"></i>
 							</div>
-							<h5 class="mb-0 text-primary" style="font-weight: bold;">Update Inspector Details</h5>
+							<h5 class="mb-0 text-primary" style="font-weight: bold;">Update HOD Details</h5>
 						</div>
 						<hr>
-						<form class="row g-3" method="POST" action="{{config('app.baseURL')}}/user/edit/{{$data->id}}">
+						<form class="row g-3" method="POST" action="{{config('app.baseURL')}}/user/edit/{{$user->id}}">
 							@csrf
-							<div class="col-md-4">
+							<div class="col-md-6">
 								<label for="inputFirstName2" class="form-label">Name</label>
-								<input type="text" name="name" required class="form-control" placeholder="Name" value="{{$data->name}}">
+								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$user->name)}}" placeholder="Name">
+								@error('name')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+							</div>
+							<div class="col-md-6">
+								<label for="inputFirstName2" class="form-label">Designation</label>
+								<input type="text" name="designation"  class="form-control @error('designation') is-invalid @enderror" value="{{old('designation',$user->designation)}}" placeholder="Designation">
+								@error('designation')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
 							</div>
 
-							<div class="col-md-4">
+							<div class="col-md-6">
 								<label for="inputFirstName2" class="form-label">Email Address</label>
-								<input type="email" name="email" class="form-control" placeholder="Email Address" value="{{$data->email}}">
+								<input type="email" name="email" class="form-control @error('email') is-invalid @enderror"  value="{{old('email',$user->email)}}" placeholder="Email Address">
+								@error('email')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-6">
 								<label for="inputFirstName2" class="form-label">Contact Number</label>
-								<input type="text" name="mobile_number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10" minlength="10" required class="form-control" placeholder="Contact Number" value="{{$data->mobile_number}}">
+								<input type="text" name="contact_number"  value="{{old('contact_number',$user->mobile_number)}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10" minlength="10"  class="form-control @error('contact_number') is-invalid @enderror" placeholder="Contact Number">
+								@error('contact_number')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
 							</div>
-							@if(auth()->user()->role_id==1)
-								<div class="col-xl-4">
-								<label class="form-label blog-label">System User</label>
-								<select name="user_id" required class="form-control form-select @error('user_id') is-invalid @enderror" onchange="getWards(this.value)" id="inputCat">
-									<option value="">Select User</option>
-									@foreach($users as $user)
-									<option value="{{$user->id}}" @if(old('user_id',$data->user_id)==$user->id) selected @endif>{{$user->name}} {{" - ".$user->category_name}}</option>
+							<div class="col-md-6">
+								<label for="inputFirstName2" class="form-label">Select Category</label>
+								<select class="form-control multiple-select form-select @error('category_id') is-invalid @enderror"  name="category_id[]" multiple="multiple">
+									<option value="">Select Category</option>
+									@foreach($categories as $category)
+									<option value="{{$category->id}}" @if($category->is_present==1) selected @endif>{{$category->name}}</option>
 									@endforeach
 								</select>
-								@error('user_id')
-								<span class="invalid-feedback" role="alert">
-									<strong>{{ $message }}</strong>
-								</span>
-								@enderror
-								</div>
-							@else
-								<input type="hidden" value="{{auth()->user()->id}}" name="user_id">
-							@endif
-							<div class="col-md-4">
-								<label for="inputFirstName2" class="form-label">Select Ward</label>
-								<select class="multiple-select" required onchange="getArea1()" id="ward_id" name="ward_id[]" multiple="multiple">
-									<option value="">Select Ward</option>
-									@foreach($wards as $ward)
-									<option value="{{$ward->id}}" @if($ward->is_present==1) selected @endif>{{$ward->name}}</option>
-									@endforeach
-								</select>
-							</div>
-
-							
-
-							<div class="col-md-4">
-								<label for="inputFirstName2" class="form-label">Select Area</label>
-								<select class="multiple-select" required name="area_id[]" id="area_id" data-placeholder="Choose anything" multiple="multiple">
-									@foreach($areas as $area)
-									<option value="{{$area->id}}" @if($area->is_present==1) selected @endif>{{$area->address}}</option>
-									@endforeach
-								</select>
-							</div>
-
-							<div class="col-md-12">
-								<label for="inputFirstName2" class="form-label">Address</label>
-								<textarea rows="4" name="address" class="form-control" placeholder="Address">{{$data->address}}</textarea>
+								@error('category_id')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
 							</div>
 							
-							<div class="col-md-4">
-								<label for="inputFirstName2" class="form-label">Status</label>
-								<select class="form-control form-select" name="status">
-									<option value="1" @if($data->is_active==1) selected @endif>Active</option>
-									<option value="0" @if($data->is_active==0) selected @endif>Inactive</option>
+							<div class="col-md-6">
+								<label for="inputFirstName2" class="form-label">Password</label>
+								<input type="password" name="password" minlength="8"  class="form-control @error('password') is-invalid @enderror" placeholder="Password">
+								@error('password')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
+							</div>
+							<div class="col-md-6">
+								<label for="inputFirstName2" class="form-label">Select Status</label>
+								<select class="form-control form-select @error('is_active') is-invalid @enderror"  name="is_active">
+									<option value="1" @if(old('is_active',$user->is_active)==1) selected @endif>Active</option>
+									<option value="0" @if(old('is_active',$user->is_active)==0) selected @endif>Inactive</option>
 								</select>
+								@error('is_active')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
 							</div>
 							<div class="col-12">
-								<button type="submit" class="btn btn-primary px-5">Update User</button>
+								<button type="submit" class="btn btn-primary px-5">Update</button>
 							</div>
 						</form>
 					</div>

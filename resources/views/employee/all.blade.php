@@ -5,10 +5,10 @@
 			<div class="page-content">
 				<div style="width: 100%;display: flex;">
 					<div style="width:50%">
-					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All Employees</h6>					
+					<h6 class="mb-0 text-uppercase" style="display:inline-block;">All Supervisor</h6>					
 					</div>
 					<div style="width:50%">
-					<p align="right"><a href="{{config('app.baseURL')}}/employee/add" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>Add New Employee</a></p>	
+					<p align="right"><a href="{{config('app.baseURL')}}/employee/add" class="btn btn-primary mb-3 mb-lg-0"><i class='bx bxs-plus-square'></i>Add New Supervisor</a></p>	
 					</div>
 				</div>
 				<hr/>
@@ -16,23 +16,11 @@
 				<div class="card">
 					<div class="card-body">
 						<div class="row" style="justify-content: end">
-							@if(auth()->user()->role_id==1)
-								<div class="col-lg-3">
-								<label class="">System User</label>
-								<select id="user_id" required class="form-control form-select" onchange="getInspector(this.value)">
-									<option value="">Select User</option>
-									@foreach($users as $sys)
-									<option value="{{$sys->id}}" @if(request()->get('user_id')==$sys->id) selected @endif>{{$sys->name}} {{" - ".$sys->category_name}}</option>
-									@endforeach
-								</select>
-								</div>
-							@else
-								<input type="hidden" value="{{auth()->user()->id}}" id="user_id">
-							@endif
+							
 							<div class="col-lg-3">
-								<label>Select Inspector</label>
+								<label>Select HOD</label>
 								<select id="inspector_id" required class="form-control form-select" id="inputCat">
-									<option value="">Select Inspector</option>
+									<option value="">Select HOD</option>
 									@foreach($inspectors as $inspector)
 									<option value="{{$inspector->id}}" @if(request()->get('inspector_id')==$inspector->id) selected @endif>{{$inspector->name}}</option>
 									@endforeach
@@ -53,8 +41,8 @@
 										<th>Name</th>
 										<th>Email</th>
 										<th>Mobile Number</th>
-										<th>Address</th>
-										<th>Inspector Name</th>
+										<th>Designation</th>
+										<th>HOD Name</th>
 										<th>Created At</th>
 										<th>Status</th>
 										<th>Action</th>
@@ -67,7 +55,7 @@
 										<td>{{$datas->name??''}}</td>
 										<td>{{$datas->email??''}}</td>
 										<td>{{$datas->mobile_number??''}}</td>
-										<td>{{$datas->address??''}}</td>
+										<td>{{$datas->designation??''}}</td>
 										<td>{{$datas->inspector->name??''}}</td>
 										<td>{{$datas->updated_at->format('Y/m/d')}}</td>
 										<td>@if($datas->is_active==1)
@@ -79,7 +67,9 @@
 										<td>
 											<div class="d-flex order-actions">
 												<a href="{{config('app.baseURL')}}/employee/view/{{$datas->id}}" class=""><i class='bx bxs-edit'></i></a>
+												@if(auth()->user()->role_id==1)
 												<a href="{{config('app.baseURL')}}/employee/delete/{{$datas->id}}"  class="ms-3"><i class='bx bxs-trash'></i></a>
+												@endif
 											</div>
 										</td>
 									</tr>
@@ -98,8 +88,7 @@
 	function applyFilter()
 	{
 		inspector_id=$("#inspector_id").val();
-		user_id=$("#user_id").val();
-		window.location.href="{{config('app.baseURL')}}/employee/all?user_id="+user_id+"&inspector_id="+inspector_id;
+		window.location.href="{{config('app.baseURL')}}/employee/all?inspector_id="+inspector_id;
 	}
 
 	$(document).ready(function(){

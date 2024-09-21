@@ -9,6 +9,7 @@ use App\Models\Ward;
 use App\Models\Report;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\Recycle;
 
 
 use App\Models\HajeriShed;
@@ -27,18 +28,39 @@ class CustomerController extends Controller
     public function getDashboard()
     {
         date_default_timezone_set('Asia/Kolkata');
-        $barcode=Bar::count();
-        $todays_report=Report::whereDate('created_at',date('Y-m-d'))->count();
-        $month_report=Report::whereMonth('created_at',date('m'))->count();
-        $year_report=Report::whereYear('created_at',date('Y'))->count();
+        $data['barcode_count'] =Bar::where('is_delete',0)->count();
+        $data['todays_report'] =Report::whereDate('created_at',date('Y-m-d'))->count();
+        $data['month_report'] =Report::whereMonth('created_at',date('m'))->count();
+        
+        //CD Waste
+        $data['total_cd_collection'] = 0;
+        
+        $records = WasteRequest::leftJoin('categories','categories.id','waste_requests.category_id')
+        ->where('categories.type',2)
+        ->where('categories.id',10)
+        ->where('waste_requests.status',4)->select('waste_requests.*','categories.name as category_name')->withSum('request_cd_items','actual_qty')->get();
+        foreach($records as $record)
+        {
+            $data['total_cd_collection'] += $record->request_cd_items_sum_actual_qty;
+        }
+        
+        $data['total_cd_processed'] = Recycle::where('type',1)->sum('weight');
+        
+        //E-Waste
+        $data['total_e_collection'] = 0;
+        
+        $records = WasteRequest::leftJoin('categories','categories.id','waste_requests.category_id')
+        ->where('categories.type',2)
+        ->where('categories.id',11)
+        ->where('waste_requests.status',4)->select('waste_requests.*','categories.name as category_name')->withSum('request_e_items','actual_qty')->get();
+        foreach($records as $record)
+        {
+            $data['total_e_collection'] += $record->request_e_items_sum_actual_qty;
+        }
+        
+        $data['total_e_processed'] = Recycle::where('type',2)->sum('weight');
 
-        $week_report = Report::select('*')
-                        ->whereBetween('created_at', 
-                            [Carbon::now()->subWeek()->startOfWeek(), Carbon::now()->subWeek()->endOfWeek()]
-                        )
-                        ->count();
-
-        return view('home')->with('barcode',$barcode)->with('todays_report',$todays_report)->with('month_report',$month_report)->with('year_report',$year_report)->with('week_report',$week_report);
+        return view('home',compact('data'));
     }
 
     public function postLogin(Request $request)
@@ -49,7 +71,9 @@ class CustomerController extends Controller
 
         $user = Customer::where(function($q) use($email){
             $q->where('email', '=', $email)->orWhere('mobile_number', '=', $email);
-        })->where('category_id',$request->category_id)->first();
+        })
+        // ->where('category_id',$request->category_id)
+        ->first();
         if (!$user) {
             return response()->json(['success'=>false, 'message' => 'User not found']);
         }
@@ -105,7 +129,9 @@ class CustomerController extends Controller
         {
             $user = Customer::where(function($q) use($email){
             $q->where('email', '=', $email)->orWhere('mobile_number', '=', $email);
-            })->where('category_id',$request->category_id)->where('is_active',1)->first();
+            })
+            // ->where('category_id',$request->category_id)
+            ->where('is_active',1)->first();
 
         }
         else
@@ -179,17 +205,21 @@ class CustomerController extends Controller
             'email' => 'nullable',
             'contact_number' => 'required',
             'address' => 'required',
-            'image' => 'required',
+            'image' => 'nullable',
             'request_items' => 'required|array'
         ]);
         if ($validator->fails())
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
+        if($request->image!=null)
+        {
+            $image_data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->image));
+            $filename = 'wastes/'.uniqid() . '.png';
+            file_put_contents(storage_path('app/' . $filename), $image_data);     
+        // $filename = $request->file('image')->store('wastes');
+        }
 
-        $image_data = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $request->image));
-        $filename = 'wastes/'.uniqid() . '.png';
-        file_put_contents(storage_path('app/' . $filename), $image_data);
 
         $user = User::where('contact_number',$request->contact_number)->first();
         if($user!=null)
@@ -215,7 +245,7 @@ class CustomerController extends Controller
         $data->email= $request->email;
         $data->contact_number= $request->contact_number;
         $data->address= $request->address;
-        $data->image= $filename;
+        $data->image= $filename ?? null;
         $data->uuid = Str::uuid();
         $data->save();
         if(count($request->request_items))
@@ -231,7 +261,7 @@ class CustomerController extends Controller
                 $item->save();
             }
 
-        return response()->json(['success'=>true,'message'=>'success', 'waste_request' => $data]);
+        return response()->json(['success'=>true,'message'=>'Request raised successfully', 'waste_request' => $data]);
 
         }
         return response()->json(['success'=>false,'message'=>'something went wrong']);
@@ -250,13 +280,15 @@ class CustomerController extends Controller
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
         $data = WasteRequest::leftJoin('users','users.id','waste_requests.customer_id')
-        ->leftJoin('customers','customers.id','waste_requests.employee_id')->with('request_items');
+        ->leftJoin('customers','customers.id','waste_requests.employee_id')
+        ->leftJoin('categories','categories.id','waste_requests.category_id')
+        ->with('request_items');
         if($request->type==2)
         $data = $data->where('waste_requests.customer_id',$request->customer_id);
         else if($request->type==1)
         $data = $data->where('waste_requests.employee_id',$request->employee_id);
         
-        $data = $data->select('waste_requests.*','users.name as customer_name','customers.name as employee_name')->get()->map(function($data){
+        $data = $data->select('waste_requests.*','users.name as customer_name','customers.name as employee_name','categories.name as category_name')->get()->map(function($data){
             if($data->status==1)
             $data['status'] = 'New';
             else if($data->status==2)
@@ -306,8 +338,10 @@ class CustomerController extends Controller
         {
             return response()->json(['success'=>false,'message'=>$validator->errors()->first()],200);
         }
-        $data = WasteRequest::where('id',$request->request_id)
+        $data = WasteRequest::where('waste_requests.id',$request->request_id)
+        ->leftJoin('categories','categories.id','waste_requests.category_id')
         ->with('request_items')
+        ->select('waste_requests.*','categories.name as category_name')
         ->first();
         if($data)
         {
@@ -327,49 +361,59 @@ class CustomerController extends Controller
 
     public function addCustomerPage()
     {
-        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+        $user = User::where('is_active',1)->where('role_id',2)->orderBy('name','ASC')->get();
         $wards=Ward::where('is_active',1)->get();
-        return view('customer.add',compact('users'))->with('wards',$wards);
+        $categories = Category::where('is_active',1)->get();
+        return view('customer.add',compact('user','categories'))->with('wards',$wards);
     }
 
     public function addCustomerData(Request $request)
     {
+        $request->validate([
+            'name'=>'required',
+            'designation'=>'required',
+            'email'=>'required|unique:customers,email',
+            'contact_number'=>'required|unique:customers,mobile_number|numeric|digits:10',
+            'category_id'=>'required',
+            'password'=>'required|min:8',
+        ],[
+            'category_id.required' => 'The category field is required.'
+        ]);
         $category = User::where('id',$request->user_id)->first();
 
-        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
-        if($check_email)
-        {
-            $notification = array(
-            'message' => 'Email ID Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
+        // $check_email=Customer::where('email',$request->email)->where('email','!=',null)->where('user_id',$request->user_id)->first();
+        // if($check_email)
+        // {
+        //     $notification = array(
+        //     'message' => 'Email ID Already Taken !',
+        //     'alert-type' => 'error'
+        // );
+        // return redirect()->back()->with($notification);
 
-        }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
-        if($check_mobile)
-        {
-            $notification = array(
-            'message' => 'Mobile Number Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
-        }
-
+        // }
+        // $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('user_id',$request->user_id)->first();
+        // if($check_mobile)
+        // {
+        //     $notification = array(
+        //     'message' => 'Mobile Number Already Taken !',
+        //     'alert-type' => 'error'
+        // );
+        // return redirect()->back()->with($notification);
+        // }
         $data=new Customer();
         $data->name=$request->name;
         $data->email=$request->email ?? null;
-        $data->mobile_number=$request->mobile_number;
+        $data->mobile_number=$request->contact_number;
         $data->address=$request->address;
-        $data->ward_id=implode(',',$request->ward_id);
+        $data->designation = $request->designation ?? null;
+        $data->category_id = implode(',',$request->category_id) ?? null;
+        // $data->ward_id=implode(',',$request->ward_id);
         $data->user_id=$request->user_id;
-        // $data->shed_id=implode(',',$request->shed_id);
-        $data->category_id=$category->category_id ?? 0;
-        $data->area_id=implode(',',$request->area_id);
+        // $data->area_id=implode(',',$request->area_id);
         $data->password=Hash::make($request->password);
         $data->save();
         $notification = array(
-            'message' => 'User Registered Successfully !',
+            'message' => 'HOD Registered Successfully !',
             'alert-type' => 'success'
         );
         return redirect('user/all')->with($notification);
@@ -378,8 +422,6 @@ class CustomerController extends Controller
     public function allCustomerData(Request $request)
     {
         $user=Customer::orderBy('customers.id','DESC');
-        if(auth()->user()->role_id!=1)
-        $user = $user->where('user_id',auth()->user()->id);
 
         $user = $user->where('customers.role_id',1)->join('categories','categories.id','customers.category_id')->select('customers.*','categories.name as category_name')->get();
         return view('customer.all')->with('user',$user);
@@ -387,86 +429,106 @@ class CustomerController extends Controller
 
     public function editCustomerPage($id)
     {
-        $data=Customer::find($id);
-        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
-        $wards=Ward::where('is_active',1)->where('user_id',$data->user_id)->get();
-        foreach ($wards as $key => $value) {
-            $value['is_present']=0;
-            if($data->ward_id!=null)
+        $categories = Category::where('is_active',1)->get();
+        $user=Customer::find($id);
+        if($user){
+            $cat = explode(',',$user->category_id);
+            if($cat!=null)
             {
-                $hajeri=explode(',',$data->ward_id);
-                foreach ($hajeri as $key1 => $value1) {
-                    if($value1==$value->id)
+                foreach($categories as $category)
+                {
+                    $category['is_present'] = 0;
+                    foreach($cat as $id)
                     {
-                        $value['is_present']=1;
-                    }            
-                }                
+                        if($category->id==$id)
+                        {
+                            $category['is_present'] = 1;        
+                        }
+                    }
+                }
             }
+            
         }
+        return view('customer.edit',compact('user','categories'));
+        // $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+        // $wards=Ward::where('is_active',1)->where('user_id',$data->user_id)->get();
+        // foreach ($wards as $key => $value) {
+        //     $value['is_present']=0;
+        //     if($data->ward_id!=null)
+        //     {
+        //         $hajeri=explode(',',$data->ward_id);
+        //         foreach ($hajeri as $key1 => $value1) {
+        //             if($value1==$value->id)
+        //             {
+        //                 $value['is_present']=1;
+        //             }            
+        //         }                
+        //     }
+        // }
 
-        $areas=Bar::where('ward_id',$data->ward_id)->get();
-        foreach ($areas as $key => $area) {
-            $area['is_present']=0;
-            if($data->area_id!=null)
-            {
-                $area_ids=explode(',',$data->area_id);
-                foreach ($area_ids as $key1=> $value1) {
-                    if($value1==$area->id)
-                    {
-                        $area['is_present']=1;
-                    }            
-                }                
-            }
-        }
-        return view('customer.edit')->with(['data'=>$data,'wards'=>$wards,'areas'=>$areas,'users'=>$users]);
+        // $areas=Bar::where('ward_id',$data->ward_id)->get();
+        // foreach ($areas as $key => $area) {
+        //     $area['is_present']=0;
+        //     if($data->area_id!=null)
+        //     {
+        //         $area_ids=explode(',',$data->area_id);
+        //         foreach ($area_ids as $key1=> $value1) {
+        //             if($value1==$area->id)
+        //             {
+        //                 $area['is_present']=1;
+        //             }            
+        //         }                
+        //     }
+        // }
+        // return view('customer.edit')->with(['data'=>$data,'wards'=>$wards,'areas'=>$areas,'users'=>$users]);
     }
     public function deleteCustomerData($id)
     {
+        if(auth()->user()->role_id!=1)
+        {
+            $notification = array(
+            'message' => "Don't have permission to delete !",
+            'alert-type' => 'error'
+        );
+        return redirect()->back()->with($notification);    
+        }
+        
         $data=Customer::find($id);
         $data->delete();
 
         $notification = array(
-            'message' => 'User Deleted Successfully !',
+            'message' => 'HOD Deleted Successfully !',
             'alert-type' => 'success'
         );
         return redirect()->back()->with($notification);
     }
 
-    public function updateCustomerData(Request $request)
+    public function updateCustomerData(Request $request,$id)
     {
-        $category = User::where('id',$request->user_id)->first();
-        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
-        if($check_email)
-        {
-            $notification = array(
-            'message' => 'Email ID Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
+        $request->validate([
+            'name'=>'required',
+            'designation'=>'required',
+            'email'=>'required|unique:customers,email,'.$id.'',
+            'contact_number'=>'required|unique:customers,contact_number,'.$id.',|numeric|digits:10',
+            'category_id'=>'required',
+            'password'=>'nullable|min:8',
+        ],[
+            'category_id.required' => 'The category field is required.'
+        ]);
 
-        }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
-        if($check_mobile)
-        {
-            $notification = array(
-            'message' => 'Mobile Number Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
-        }
         $data=Customer::find($request->id);
         $data->name=$request->name;
         $data->email=$request->email ?? null;
-        $data->mobile_number=$request->mobile_number;
+        $data->mobile_number=$request->contact_number;
         $data->address=$request->address;
-        $data->is_active=$request->status;
-        $data->ward_id=implode(',', $request->ward_id);
+        $data->is_active=$request->is_active;
+        // $data->ward_id=implode(',', $request->ward_id);
         $data->user_id=$request->user_id;
-        $data->category_id=$category->category_id ?? 0;
-        $data->area_id=implode(',', $request->area_id);
+        $data->category_id=implode(',',$request->category_id) ?? null;
+        // $data->area_id=implode(',', $request->area_id);
         $data->save();
         $notification = array(
-            'message' => 'User Updated Successfully !',
+            'message' => 'HOD Details Updated Successfully !',
             'alert-type' => 'success'
         );
         return redirect('user/all')->with($notification);
@@ -476,7 +538,7 @@ class CustomerController extends Controller
     {
         $html="";
         $html.='<option value="">Select Area</option>';
-        $datas=Bar::whereIn('ward_id',$request->ward_id)->get();
+        $datas=Bar::whereIn('ward_id',$request->ward_id)->where('is_delete',0)->get();
         if($datas)
         {
             foreach ($datas as $key => $data) {
@@ -510,7 +572,7 @@ public function getInspectors(Request $request)
 public function addEmployeeData(Request $request)
     {
         $category = User::where('id',$request->user_id)->first();
-        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
+        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->where('user_id',$request->user_id)->first();
         if($check_email)
         {
             $notification = array(
@@ -520,7 +582,7 @@ public function addEmployeeData(Request $request)
         return redirect()->back()->with($notification);
 
         }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
+        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('user_id',$request->user_id)->first();
         if($check_mobile)
         {
             $notification = array(
@@ -533,16 +595,17 @@ public function addEmployeeData(Request $request)
         $data=new Customer();
         $data->name=$request->name;
         $data->email=$request->email ?? null;
+        $data->designation=$request->designation ?? null;
         $data->inspector_id=$request->inspector_id;
         $data->role_id=2;
         $data->mobile_number=$request->mobile_number;
-        $data->address=$request->address;
+        // $data->address=$request->address;
         $data->user_id=$request->user_id;
-        $data->category_id=$category->category_id ?? 0;
+        $data->category_id=implode(',',$request->category_id) ?? 0;
         $data->password=Hash::make($request->password);
         $data->save();
         $notification = array(
-            'message' => 'Employee Added Successfully !',
+            'message' => 'Supervisor Added Successfully !',
             'alert-type' => 'success'
         );
         return redirect('employee/all')->with($notification);
@@ -552,28 +615,22 @@ public function addEmployeeData(Request $request)
     public function addEmployeePage()
     {
         $inspectors=Customer::where('role_id',1);
-        if(auth()->user()->role_id!=1)
-        $inspectors=$inspectors->where('user_id',auth()->user()->id);
         $inspectors=$inspectors->where('is_active',1)->get();
+        $categories = Category::where('is_active',1)->get();
 
-        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
-
-        return view('employee.add',compact('users'))->with('inspectors',$inspectors);
+        return view('employee.add',compact('categories'))->with('inspectors',$inspectors);
     }
 
     public function allEmployeeData(Request $request)
     {
         $user=Customer::orderBy('id','DESC');
-        if(auth()->user()->role_id!=1)
-        $user = $user->where('user_id',auth()->user()->id);
+
         $user = $user->where('role_id',2);
         if($request->inspector_id!=null)
         $user->where('inspector_id',$request->inspector_id);
         $user = $user->get();
 
         $inspectors=Customer::where('role_id',1);
-        if(auth()->user()->role_id!=1)
-        $inspectors=$inspectors->where('user_id',auth()->user()->id);
         $inspectors=$inspectors->where('is_active',1)->get();
 
         $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
@@ -584,11 +641,20 @@ public function addEmployeeData(Request $request)
 
     public function deleteEmployeeData($id)
     {
+        if(auth()->user()->role_id!=1)
+        {
+            $notification = array(
+            'message' => "Don't have permission to delete !",
+            'alert-type' => 'error'
+        );
+        return redirect()->back()->with($notification);
+        
+        }
         $data=Customer::find($id);
         $data->delete();
 
         $notification = array(
-            'message' => 'Employee Deleted Successfully !',
+            'message' => 'Supervisor Deleted Successfully !',
             'alert-type' => 'success'
         );
         return redirect()->back()->with($notification);
@@ -597,16 +663,34 @@ public function addEmployeeData(Request $request)
 
     public function editEmployeePage($id)
     {
-        $data=Customer::find($id);
-        $users = User::where('users.is_active',1)->where('users.role_id',2)->join('categories','categories.id','users.category_id')->orderBy('users.name','ASC')->select('users.*','categories.name as category_name')->get();
+        $categories = Category::where('is_active',1)->get();
+        $user=Customer::find($id);
+        if($user){
+            $cat = explode(',',$user->category_id);
+            if($cat!=null)
+            {
+                foreach($categories as $category)
+                {
+                    $category['is_present'] = 0;
+                    foreach($cat as $id)
+                    {
+                        if($category->id==$id)
+                        {
+                            $category['is_present'] = 1;        
+                        }
+                    }
+                }
+            }
+            
+        }
         $inspectors=Customer::where('role_id',1)->where('is_active',1)->get();
-        return view('employee.edit',compact('users'))->with(['data'=>$data,'inspectors'=>$inspectors]);
+        return view('employee.edit',compact('user','categories','inspectors'));
     }
 
     public function updateEmployeeData(Request $request)
     {
         $category = User::where('id',$request->user_id)->first();
-        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
+        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->where('user_id',$request->user_id)->first();
         if($check_email)
         {
             $notification = array(
@@ -616,7 +700,7 @@ public function addEmployeeData(Request $request)
         return redirect()->back()->with($notification);
 
         }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->where('category_id',$category->category_id)->where('user_id',$request->user_id)->first();
+        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->where('user_id',$request->user_id)->first();
         if($check_mobile)
         {
             $notification = array(
@@ -630,15 +714,16 @@ public function addEmployeeData(Request $request)
         $data=Customer::find($request->id);
         $data->name=$request->name;
         $data->email=$request->email;
+        $data->designation=$request->designation;
         $data->mobile_number=$request->mobile_number;
         $data->address=$request->address;
         $data->is_active=$request->status;
         $data->inspector_id=$request->inspector_id;
-        $data->user_id=$request->user_id;
-        $data->category_id=$category->category_id ?? 0;
+        // $data->user_id=$request->user_id;
+        $data->category_id=implode(',',$request->category_id) ?? 0;
         $data->save();
         $notification = array(
-            'message' => 'Employee Details Updated Successfully !',
+            'message' => 'Supervisor Details Updated Successfully !',
             'alert-type' => 'success'
         );
         return redirect('employee/all')->with($notification);

@@ -15,12 +15,12 @@
 						<div class="card-title d-flex align-items-center">
 							<div><i class="bx bx-plus me-1 font-22 text-primary"></i>
 							</div>
-							<h5 class="mb-0 text-primary" style="font-weight: bold;">Add HOD</h5>
+							<h5 class="mb-0 text-primary" style="font-weight: bold;">Add Subadmin</h5>
 						</div>
 						<hr>
 						<form class="row g-3" method="POST" action="{{route('admins.store')}}">
 							@csrf
-							<div class="col-md-6">
+							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Name</label>
 								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" placeholder="Name">
 								@error('name')
@@ -30,17 +30,9 @@
                                                     @enderror
 							</div>
 							
-							<div class="col-md-6">
-								<label for="inputFirstName2" class="form-label">Designation</label>
-								<input type="text" name="designation"  class="form-control @error('designation') is-invalid @enderror" value="{{old('designation')}}" placeholder="Designation">
-								@error('designation')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                    @enderror
-							</div>
+						
 
-							<div class="col-md-6">
+							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Email Address</label>
 								<input type="email" name="email" class="form-control @error('email') is-invalid @enderror"  value="{{old('email')}}" placeholder="Email Address">
 								@error('email')
@@ -49,7 +41,7 @@
                                                     </span>
                                                     @enderror
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Contact Number</label>
 								<input type="text" name="contact_number"  value="{{old('contact_number')}}" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10" minlength="10"  class="form-control @error('contact_number') is-invalid @enderror" placeholder="Contact Number">
 								@error('contact_number')
@@ -58,22 +50,9 @@
                                                     </span>
                                                     @enderror
 							</div>
-							<div class="col-md-6">
-								<label for="inputFirstName2" class="form-label">Select Category</label>
-								<select class="form-control multiple-select form-select @error('category_id') is-invalid @enderror"  name="category_id[]" multiple="multiple">
-									<option value="">Select Category</option>
-									@foreach($categories as $category)
-									<option value="{{$category->id}}" @if(old('category_id')==$category->id) selected @endif>{{$category->name}}</option>
-									@endforeach
-								</select>
-								@error('category_id')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                    @enderror
-							</div>
+						
 							
-							<div class="col-md-6">
+							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Password</label>
 								<input type="password" name="password" minlength="8"  class="form-control @error('password') is-invalid @enderror" placeholder="Password">
 								@error('password')

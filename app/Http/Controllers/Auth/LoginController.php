@@ -42,16 +42,21 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-    public function showLoginForm(Request $request)
-    {
-        $categories = Category::where('is_active',1)->orderBy('name','ASC');
-        if($request->system=="gvp_monitoring")
-            $categories = $categories->where('type',1);
-        else
-            $categories = $categories->where('type',2);
-        $categories = $categories->get();
+    // public function showLoginForm(Request $request)
+    // {
+    //     $categories = Category::where('is_active',1)->orderBy('name','ASC');
+    //     if($request->system=="gvp_monitoring")
+    //         $categories = $categories->where('type',1);
+    //     else
+    //         $categories = $categories->where('type',2);
+    //     $categories = $categories->get();
 
-        return view('auth.user-login',compact('categories'));
+    //     return view('auth.user-login',compact('categories'));
+    // }
+    
+    public function showLoginForm()
+    {
+        return view('auth.login');
     }
 
     public function userLogin(Request $request)

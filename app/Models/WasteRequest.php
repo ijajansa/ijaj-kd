@@ -12,4 +12,13 @@ class WasteRequest extends Model
     {
         return $this->hasMany('App\Models\WasteRequestItem','request_id','id');
     }
+    public function request_cd_items()
+    {
+        return $this->hasMany('App\Models\WasteRequestItem','request_id','id')->where('category_id',10);
+    }
+    
+    public function request_e_items()
+    {
+        return $this->hasMany('App\Models\WasteRequestItem','request_id','id')->where('category_id',11);
+    }
 }
