@@ -104,7 +104,7 @@ class WasteRequestController extends Controller
             'message' => 'Employee Assigned Successfully',
             'alert-type' => 'success'
         );
-        return redirect()->back()->with($notification);
+        return redirect('waste-requests')->with($notification);
     }
 
     public function sendNotification($token, $msg)

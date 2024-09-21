@@ -1,5 +1,17 @@
 @extends('layouts.app')
 @section('content')
+<script type="text/javascript">
+	function blockSpecialChar(e) {
+		var k = e.keyCode;
+		return (
+			(k >= 65 && k <= 90) ||  // A-Z
+			(k >= 97 && k <= 122) || // a-z
+			k === 8 ||               // Backspace
+			(k >= 48 && k <= 57) ||  // 0-9
+			k === 32                 // Space
+		);
+	}
+</script>
 <!--start page wrapper -->
 <div class="page-wrapper">
 	<div class="page-content">
@@ -17,15 +29,11 @@
 							@csrf
 							<div class="col-6">
 								<label for="inputLastName1" class="form-label">Ward Number</label>
-								<div class="input-group"> <span class="input-group-text bg-transparent"><i class='bx bxs-folder'></i></span>
-									<input type="text" value="{{$data->ward_number}}" class="form-control border-start-0" id="name" placeholder="Ward Number" name="ward_number" required />
-								</div>
+									<input type="text" value="{{$data->ward_number}}" class="form-control" id="name" placeholder="Ward Number" name="ward_number" required  onkeypress="return blockSpecialChar(event)"/>
 							</div>
 							<div class="col-6">
 								<label for="inputLastName1" class="form-label">Ward Name</label>
-								<div class="input-group"> <span class="input-group-text bg-transparent"><i class='bx bxs-user'></i></span>
-									<input type="text" value="{{$data->name}}" class="form-control border-start-0" id="name" placeholder="Ward Name" name="name" required />
-								</div>
+									<input type="text" value="{{$data->name}}" class="form-control" id="name" placeholder="Ward Name" name="name" required  onkeypress="return blockSpecialChar(event)"/>
 							</div>
 					<!--@if(auth()->user()->role_id==1)-->
 					<!--	<div class="col-xl-12">-->

@@ -41,7 +41,7 @@
 			<p align="center">
 				{!! QrCode::size(100)->generate($data1) !!}
 			</p><br>
-			<p align="center" style="font-size: 14px;margin-top: -15px;">Area Name : {{$ans->address}}</p>
+			<p align="center" style="font-size: 14px;margin-top: -15px;">Address : {{$ans->address}}</p>
 	</div>
 </div>
 @endforeach

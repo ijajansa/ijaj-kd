@@ -33,7 +33,7 @@
 			<p align="center">
 				{!! QrCode::size(100)->generate($data1) !!}
 			</p><br>
-			<p align="center" style="font-size: 14px;margin-top: -15px;">Area Name : {{$data->address}}</p>
+			<p align="center" style="font-size: 14px;margin-top: -15px;">Address : {{$data->address}}</p>
 	</div>
 </div>
 </body>

@@ -17,7 +17,7 @@ class OrderController extends Controller
 
     public function printAllBarcode()
     {
-        $data=Bar::all();
+        $data=Bar::where('is_delete',0)->get();
         return view('order.edit-page')->with('data',$data);
     }
 

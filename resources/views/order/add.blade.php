@@ -3,7 +3,17 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.min.css">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
-
+<script type="text/javascript">
+	function blockSpecialChar(e) {
+		var k = e.keyCode;
+		return (
+			(k >= 65 && k <= 90) ||  // A-Z
+			(k >= 97 && k <= 122) || // a-z
+			k === 8 ||               // Backspace
+			k === 32                 // Space
+		);
+	}
+</script>
 
 <!--start page wrapper -->
 <div class="page-wrapper">
@@ -88,11 +98,11 @@
     }
 		data = '<div class="row" style="padding:5px 0"><div class="col-md-5">\
 			<label for="inputFirstName2" class="form-label">'+categoryName2+' Name <span class="text-danger" style="font-weight: bold;">*</span></label>\
-								<input type="text" name="name[]" class="form-control" id="inputFirstName2" required>\
+								<input type="text" name="name[]" class="form-control" id="inputFirstName2" required  onkeypress="return blockSpecialChar(event)">\
 							</div>\
 							<div class="col-md-5">\
 								<label for="inputFirstName2" class="form-label">Address <span class="text-danger" style="font-weight: bold;">*</span></label>\
-								<input type="text" name="address[]" class="form-control" id="inputFirstName2" required>\
+								<input type="text" name="address[]" class="form-control" id="inputFirstName2" required  onkeypress="return blockSpecialChar(event)">\
 							</div>\
 							<div class="col-md-2">\
 								<label for="" style="opacity: 0;display:block"  class="form-label">button</label>\

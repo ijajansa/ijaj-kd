@@ -370,14 +370,15 @@ class CustomerController extends Controller
     public function addCustomerData(Request $request)
     {
         $request->validate([
-            'name'=>'required',
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]+$/'],
             'designation'=>'required',
-            'email'=>'required|unique:customers,email',
+            'email'=>'required|unique:customers,email|email',
             'contact_number'=>'required|unique:customers,mobile_number|numeric|digits:10',
             'category_id'=>'required',
             'password'=>'required|min:8',
         ],[
-            'category_id.required' => 'The category field is required.'
+            'category_id.required' => 'The category field is required.',
+            'name.regex' => 'The name field can only contain letters and spaces.'
         ]);
         $category = User::where('id',$request->user_id)->first();
 
@@ -506,20 +507,22 @@ class CustomerController extends Controller
     public function updateCustomerData(Request $request,$id)
     {
         $request->validate([
-            'name'=>'required',
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]+$/'],
             'designation'=>'required',
             'email'=>'required|unique:customers,email,'.$id.'',
-            'contact_number'=>'required|unique:customers,contact_number,'.$id.',|numeric|digits:10',
+            'contact_number'=>'required|unique:customers,mobile_number,'.$id.',|numeric|digits:10',
             'category_id'=>'required',
             'password'=>'nullable|min:8',
         ],[
-            'category_id.required' => 'The category field is required.'
+            'category_id.required' => 'The category field is required.',
+            'name.regex' => 'The name field can only contain letters and spaces.'
         ]);
 
         $data=Customer::find($request->id);
         $data->name=$request->name;
         $data->email=$request->email ?? null;
         $data->mobile_number=$request->contact_number;
+        $data->designation = $request->designation ?? null;
         $data->address=$request->address;
         $data->is_active=$request->is_active;
         // $data->ward_id=implode(',', $request->ward_id);
@@ -571,26 +574,22 @@ public function getInspectors(Request $request)
 
 public function addEmployeeData(Request $request)
     {
+        $request->validate([
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]+$/'],
+            'designation'=>'required',
+            'email'=>'required|unique:customers,email|email',
+            'mobile_number'=>'required|unique:customers,mobile_number|numeric|digits:10',
+            'category_id'=>'required',
+            'inspector_id'=>'required',
+            'password'=>'required|min:8',
+        ],[
+            'mobile_number.required' => 'The contact number field is required.',
+            'inspector_id.required' => 'The HOD field is required.',
+            'category_id.required' => 'The category field is required.',
+            'name.regex' => 'The name field can only contain letters and spaces.'
+        ]);
         $category = User::where('id',$request->user_id)->first();
-        $check_email=Customer::where('email',$request->email)->where('email','!=',null)->where('user_id',$request->user_id)->first();
-        if($check_email)
-        {
-            $notification = array(
-            'message' => 'Email ID Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
-
-        }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('user_id',$request->user_id)->first();
-        if($check_mobile)
-        {
-            $notification = array(
-            'message' => 'Mobile Number Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
-        }
+        
 
         $data=new Customer();
         $data->name=$request->name;
@@ -687,29 +686,21 @@ public function addEmployeeData(Request $request)
         return view('employee.edit',compact('user','categories','inspectors'));
     }
 
-    public function updateEmployeeData(Request $request)
+    public function updateEmployeeData(Request $request,$id)
     {
-        $category = User::where('id',$request->user_id)->first();
-        $check_email=Customer::where('email',$request->email)->where('id','!=',$request->id)->where('email','!=',null)->where('user_id',$request->user_id)->first();
-        if($check_email)
-        {
-            $notification = array(
-            'message' => 'Email ID Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
-
-        }
-        $check_mobile=Customer::where('mobile_number',$request->mobile_number)->where('id','!=',$request->id)->where('user_id',$request->user_id)->first();
-        if($check_mobile)
-        {
-            $notification = array(
-            'message' => 'Mobile Number Already Taken !',
-            'alert-type' => 'error'
-        );
-        return redirect()->back()->with($notification);
-        }
-
+        $request->validate([
+            'name' => ['required', 'string', 'regex:/^[a-zA-Z\s]+$/'],
+            'designation'=>'required',
+            'email'=>'required|unique:customers,email,'.$id.'',
+            'mobile_number'=>'required|unique:customers,mobile_number,'.$id.',|numeric|digits:10',
+            'category_id'=>'required',
+            'inspector_id'=>'required',
+        ],[
+            'mobile_number.required' => 'The contact number field is required.',
+            'inspector_id.required' => 'The HOD field is required.',
+            'category_id.required' => 'The category field is required.',
+            'name.regex' => 'The name field can only contain letters and spaces.'
+        ]);
 
         $data=Customer::find($request->id);
         $data->name=$request->name;

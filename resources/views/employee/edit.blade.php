@@ -15,6 +15,17 @@
 	}
 
 </style>
+<script type="text/javascript">
+	function blockSpecialChar(e) {
+		var k = e.keyCode;
+		return (
+			(k >= 65 && k <= 90) ||  // A-Z
+			(k >= 97 && k <= 122) || // a-z
+			k === 8 ||               // Backspace
+			k === 32                 // Space
+		);
+	}
+</script>
     <link href="{{config('app.baseURL')}}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
     <link href="{{config('app.baseURL')}}/assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
 
@@ -37,31 +48,50 @@
 							@csrf
 							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Name</label>
-								<input type="text" name="name" required class="form-control" placeholder="Name" value="{{$user->name}}">
+								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" placeholder="Name" value="{{old('name',$user->name)}}" onkeypress="return blockSpecialChar(event)">
 							</div>
 								<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Designation</label>
-								<input type="text" name="designation"  class="form-control @error('designation') is-invalid @enderror" value="{{old('designation',$user->designation)}}" placeholder="Designation">
-								
+								<input type="text" name="designation"  class="form-control @error('designation') is-invalid @enderror" value="{{old('designation',$user->designation)}}" placeholder="Designation" onkeypress="return blockSpecialChar(event)">
+								@error('name')
+								<span class="invalid-feedback" role="alert">
+									<strong>{{ $message }}</strong>
+								</span>
+								@enderror
 							</div>
 
 							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Email Address</label>
-								<input type="email" name="email" class="form-control" placeholder="Email Address" value="{{$user->email}}">
+								<input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email Address" value="{{old('email',$user->email)}}">
+								@error('email')
+								<span class="invalid-feedback" role="alert">
+									<strong>{{ $message }}</strong>
+								</span>
+								@enderror
 							</div>
 							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Contact Number</label>
-								<input type="text" name="mobile_number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10" minlength="10" required class="form-control" placeholder="Contact Number" value="{{$user->mobile_number}}">
+								<input type="text" name="mobile_number" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="10" minlength="10"  class="form-control @error('mobile_number') is-invalid @enderror" placeholder="Contact Number" value="{{$user->mobile_number}}">
+								@error('mobile_number')
+								<span class="invalid-feedback" role="alert">
+									<strong>{{ $message }}</strong>
+								</span>
+								@enderror
 							</div>
 							
 							<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Select HOD</label>
-								<select class="form-control form-select" required id="inspector_id" name="inspector_id">
+								<select class="form-control form-select"  id="inspector_id" name="inspector_id">
 									<option value="">Select HOD</option>
 									@foreach($inspectors as $inspector)
 									<option value="{{$inspector->id}}" @if($inspector->id==$user->inspector_id) selected @endif>{{$inspector->name}}</option>
 									@endforeach
 								</select>
+								@error('inspector_id')
+								<span class="invalid-feedback" role="alert">
+									<strong>{{ $message }}</strong>
+								</span>
+								@enderror
 							</div>
 								<div class="col-md-4">
 								<label for="inputFirstName2" class="form-label">Select Category</label>
@@ -71,6 +101,11 @@
 									<option value="{{$category->id}}" @if($category->is_present==1) selected @endif>{{$category->name}}</option>
 									@endforeach
 								</select>
+								@error('category_id')
+								<span class="invalid-feedback" role="alert">
+									<strong>{{ $message }}</strong>
+								</span>
+								@enderror
 								
 							</div>
 

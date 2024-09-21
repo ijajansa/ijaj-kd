@@ -15,7 +15,17 @@
 	}
 
 </style>
-
+<script type="text/javascript">
+	function blockSpecialChar(e) {
+		var k = e.keyCode;
+		return (
+			(k >= 65 && k <= 90) ||  // A-Z
+			(k >= 97 && k <= 122) || // a-z
+			k === 8 ||               // Backspace
+			k === 32                 // Space
+		);
+	}
+</script>
 
             <!--plugins-->
     <link href="{{config('app.baseURL')}}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
@@ -39,7 +49,7 @@
 							@csrf
 							<div class="col-md-6">
 								<label for="inputFirstName2" class="form-label">Name</label>
-								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$user->name)}}" placeholder="Name">
+								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name',$user->name)}}" placeholder="Name" onkeypress="return blockSpecialChar(event)">
 								@error('name')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>
@@ -48,7 +58,7 @@
 							</div>
 							<div class="col-md-6">
 								<label for="inputFirstName2" class="form-label">Designation</label>
-								<input type="text" name="designation"  class="form-control @error('designation') is-invalid @enderror" value="{{old('designation',$user->designation)}}" placeholder="Designation">
+								<input type="text" name="designation"  class="form-control @error('designation') is-invalid @enderror" value="{{old('designation',$user->designation)}}" placeholder="Designation" onkeypress="return blockSpecialChar(event)">
 								@error('designation')
                                                     <span class="invalid-feedback" role="alert">
                                                         <strong>{{ $message }}</strong>

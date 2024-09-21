@@ -3,7 +3,17 @@
 	<!--plugins-->
     <link href="{{config('app.baseURL')}}/assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
     <link href="{{config('app.baseURL')}}/assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
-
+	<script type="text/javascript">
+		function blockSpecialChar(e) {
+			var k = e.keyCode;
+			return (
+				(k >= 65 && k <= 90) ||  // A-Z
+				(k >= 97 && k <= 122) || // a-z
+				k === 8 ||               // Backspace
+				k === 32                 // Space
+			);
+		}
+	</script>
 <!--start page wrapper -->
 <div class="page-wrapper">
 	<div class="page-content">
@@ -22,7 +32,7 @@
 							@csrf
 							<div class="col-md-12">
 								<label for="inputFirstName2" class="form-label">Name</label>
-								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" placeholder="eg. TV, Monitor">
+								<input type="text" name="name"  class="form-control @error('name') is-invalid @enderror" value="{{old('name')}}" placeholder="eg. TV, Monitor"  onkeypress="return blockSpecialChar(event)">
 								@error('name')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

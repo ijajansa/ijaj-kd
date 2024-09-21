@@ -5,6 +5,18 @@
 					display: none;
 				}
 			</style>
+			<script type="text/javascript">
+				function blockSpecialChar(e) {
+					var k = e.keyCode;
+					return (
+						(k >= 65 && k <= 90) ||  // A-Z
+						(k >= 97 && k <= 122) || // a-z
+						k === 8 ||               // Backspace
+						(k >= 48 && k <= 57) ||  // 0-9
+						k === 32                 // Space
+					);
+				}
+			</script>
 			<!--start page wrapper -->
 			<div class="page-wrapper">
 				<div class="page-content">
@@ -98,12 +110,12 @@
 					<!--@endif-->
 					<div class="col-xl-6 mt-2">
 						<label class="form-label blog-label">Ward Number</label>
-						<input type="text" name="ward_number" required placeholder="Ward Number" class="form-control">
+						<input type="text" name="ward_number" required placeholder="Ward Number" class="form-control" onkeypress="return blockSpecialChar(event)">
 					</div>
 					
 					<div class="col-xl-6 mt-2">
 						<label class="form-label blog-label">Ward Name</label>
-						<input type="text" name="ward_name" required placeholder="Ward Name" class="form-control">
+						<input type="text" name="ward_name" required placeholder="Ward Name" class="form-control" onkeypress="return blockSpecialChar(event)">
 					</div>
 				</div>
 			</div>
