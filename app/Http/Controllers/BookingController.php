@@ -56,6 +56,7 @@ class BookingController extends Controller
     }
     public function getAllReports(Request $request)
     {
+        $categories = Category::where('is_active',1)->get();
         $data=Report::with('user')->with('barcode')->orderBy('id','DESC');
         if($request->from_date!=null)
         {
@@ -69,6 +70,10 @@ class BookingController extends Controller
         if($request->barcode_id!=null)
         {
             $data=$data->where('barcode_id',$request->barcode_id);
+        }
+        if($request->category_id!=null)
+        {
+            $data=$data->where('category_id',$request->category_id);
         }
         
         if($request->name!=null)
@@ -115,7 +120,7 @@ class BookingController extends Controller
         
         $data=$data->get();
         
-        return view('booking.all')->with('data',$data);
+        return view('booking.all',compact('data','categories'));
     }
 
     public function addReport(Request $request)
@@ -386,7 +391,7 @@ class BookingController extends Controller
         <th>Time</th>
         <th>QRCode ID</th>
         <th>Category Name</th>
-        <th>Ward Name</th>
+        <th>Ward Number</th>
         <th>Area Name</th>
         <th>HOD Name</th>
         <th>Supervisor Name</th>
@@ -425,6 +430,11 @@ class BookingController extends Controller
         if($request->barcode_id!=null)
         {
             $rto=$rto->where('barcode_id',$request->barcode_id);
+        }
+
+        if($request->category_id!=null)
+        {
+            $rto=$rto->where('category_id',$request->category_id);
         }
         
         
@@ -474,7 +484,7 @@ class BookingController extends Controller
             {
                 if($rtos->barcode->ward!=NULL)
                 {
-                    $html.='<td>'.$rtos->barcode->ward->name.'</td>';
+                    $html.='<td>'.$rtos->barcode->ward->ward_number.'</td>';
                 }
                 else
                 {
@@ -490,12 +500,12 @@ class BookingController extends Controller
                 <td>-</td>';
             }
             
-            if($rtos->user !=null)
-            $html.='<td>'.$rtos->user->name.'</td>';
-            else
-            $html.='<td>-</td>';
             if($rtos->mukadam !=null)
             $html.='<td>'.$rtos->mukadam->name.'</td>';
+            else
+            $html.='<td>-</td>';
+            if($rtos->user !=null)
+            $html.='<td>'.$rtos->user->name.'</td>';
             else
             $html.='<td>-</td>';
             
@@ -528,7 +538,7 @@ class BookingController extends Controller
         
 
         header("Content-type: application/xls");  
-        header("Content-Disposition: attachment; filename=reports.xls");  
+        header("Content-Disposition: attachment; filename=inspection-reports.xls");  
         echo $html;
 
     }

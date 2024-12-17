@@ -32,6 +32,13 @@ class CustomerController extends Controller
         $data['todays_report'] =Report::whereDate('created_at',date('Y-m-d'))->count();
         $data['month_report'] =Report::whereMonth('created_at',date('m'))->count();
         
+        $data['categories'] = Category::where('type',1)
+        ->where('is_active',1)
+        ->withCount('install')->get()->map(function($record){
+            $record['today_count']=Report::whereDate('created_at',date('Y-m-d'))->where('category_id',$record->id)->count();
+            $record['monthly_count']=Report::whereMonth('created_at',date('m'))->where('category_id',$record->id)->count();
+            return $record;
+        });
         //CD Waste
         $data['total_cd_collection'] = 0;
         

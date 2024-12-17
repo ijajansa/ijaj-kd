@@ -37,9 +37,7 @@
 									<thead>
 										<tr>
 											<th>Sr. No</th>
-											<th>Ward Number</th>
-											<th>Ward Name</th>
-											
+											<th>Ward Number</th>											
 											<th>Status</th>
 											<th>Created Date</th>
 											<th>Action</th>
@@ -51,7 +49,6 @@
 										<tr>
 											<td>{{++$key}}</td>
 											<td>{{$data->ward_number??'-'}}</td>
-											<td>{{$data->name??''}}</td>
 											<!--@if(auth()->user()->role_id==1)-->
 											<!--<td>{{$data?->user?->name ?? '-'}}</td>-->
 											<!--@endif-->
@@ -108,15 +105,11 @@
 					<!--@else-->
 					<!--<input type="hidden" value="{{auth()->user()->id}}" name="user_id">-->
 					<!--@endif-->
-					<div class="col-xl-6 mt-2">
+					<div class="col-xl-12 mt-2">
 						<label class="form-label blog-label">Ward Number</label>
 						<input type="text" name="ward_number" required placeholder="Ward Number" class="form-control" onkeypress="return blockSpecialChar(event)">
 					</div>
 					
-					<div class="col-xl-6 mt-2">
-						<label class="form-label blog-label">Ward Name</label>
-						<input type="text" name="ward_name" required placeholder="Ward Name" class="form-control" onkeypress="return blockSpecialChar(event)">
-					</div>
 				</div>
 			</div>
 			<div class="modal-footer">

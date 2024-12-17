@@ -27,13 +27,9 @@
 						<hr>
 						<form method="POST" action="{{config('app.baseURL')}}/wards/edit/{{$data->id}}" class="row g-3">
 							@csrf
-							<div class="col-6">
+							<div class="col-12">
 								<label for="inputLastName1" class="form-label">Ward Number</label>
 									<input type="text" value="{{$data->ward_number}}" class="form-control" id="name" placeholder="Ward Number" name="ward_number" required  onkeypress="return blockSpecialChar(event)"/>
-							</div>
-							<div class="col-6">
-								<label for="inputLastName1" class="form-label">Ward Name</label>
-									<input type="text" value="{{$data->name}}" class="form-control" id="name" placeholder="Ward Name" name="name" required  onkeypress="return blockSpecialChar(event)"/>
 							</div>
 					<!--@if(auth()->user()->role_id==1)-->
 					<!--	<div class="col-xl-12">-->

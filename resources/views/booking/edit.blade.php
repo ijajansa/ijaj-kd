@@ -39,22 +39,22 @@
 							</div>
 							<div class="col-md-2">
 								<label for="inputState" class="form-label">Address</label>
-								<input type="text" name="podate" class="form-control" readonly value="{{$data->barcode->address??''}}" id="inputState">
+								<input type="text" name="podate" class="form-control" readonly value="{{$data?->barcode?->address??''}}" id="inputState">
 							</div>
 
 							<div class="col-md-2">
-								<label for="inputState" class="form-label">Ward Name</label>
-								<input type="text" name="podate" class="form-control" readonly value="{{$data->barcode->ward->name??''}}" id="inputState">
+								<label for="inputState" class="form-label">Ward Number</label>
+								<input type="text" name="podate" class="form-control" readonly value="{{$data?->barcode?->ward?->ward_number??''}}" id="inputState">
 							</div>
 
 							<div class="col-md-2">
 								<label for="inputState" class="form-label">QR ID</label>
-								<input type="text" name="podate" class="form-control" readonly value="{{$data->barcode_id??0}}" id="inputState">
+								<input type="text" name="podate" class="form-control" readonly value="{{$data?->barcode_id??0}}" id="inputState">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-lg-6" style="margin-top: 30px;">
-								<h6>Morning Before Work</h6>
+								<h6>@if($data->category_id!=23) Morning @endif Before Work</h6>
 								<div class="row">
 									<div class="col-md-6">
 										@if($data->before_work!=null)
@@ -73,7 +73,7 @@
 							
 
 							<div class="col-lg-6" style="margin-top: 30px;">
-								<h6>Morning After Work</h6>
+								<h6>@if($data->category_id!=23) Morning @endif After Work</h6>
 								<div class="row">
 									<div class="col-md-6">
 										@if($data->after_work!=null)
@@ -94,7 +94,7 @@
 								<input type="text" name="ponumber" class="form-control" readonly value="{{$data->remark}}" id="inputCity">
 							</div>
 						</div>
-
+						@if($data->category_id!=23)
 						<div class="row">
 							<div class="col-lg-6" style="margin-top: 30px;">
 								<h6>Afternoon Before Work</h6>
@@ -180,6 +180,7 @@
 								<input type="text" name="ponumber" class="form-control" readonly value="{{$data->section1_remark}}" id="inputCity">
 							</div>
 						</div>
+						@endif
 
 
 

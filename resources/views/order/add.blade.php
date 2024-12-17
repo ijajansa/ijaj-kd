@@ -33,11 +33,11 @@
 					@csrf
 						<div class="row g-3">
 							<div class="col-md-6">
-								<label for="inputFirstName2" class="form-label">Select Ward <span class="text-danger" style="font-weight: bold;">*</span></label>
+								<label for="inputFirstName2" class="form-label">Select Ward Number <span class="text-danger" style="font-weight: bold;">*</span></label>
 								<select class="form-control form-select" id="ward_id" name="ward_id" required>
 									<option value="">Select</option>
 									@foreach($wards as $ward)
-									<option value="{{$ward->id}}">{{$ward->name}}</option>
+									<option value="{{$ward->id}}">{{$ward->ward_number}}</option>
 									@endforeach
 								</select>
 							</div>
