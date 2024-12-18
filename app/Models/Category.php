@@ -9,6 +9,6 @@ class Category extends Model
 {
     use HasFactory;
     public function install(){
-        return $this->hasMany(Bar::class,'category_id','id');
+        return $this->hasMany(Bar::class,'category_id','id')->where('is_delete',0);
     }
 }
