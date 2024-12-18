@@ -39,7 +39,7 @@
 			<?php $data1="Id :".$ans->id."\nAddress :".$ans->address."\nCategory :".$ans->category_id;?>
 			
 			<p align="center">
-				{!! QrCode::size(100)->generate($data1) !!}
+				{!! QrCode::encoding('UTF-8')->size(100)->generate($data1) !!}
 			</p><br>
 			<p align="center" style="font-size: 14px;margin-top: -15px;">Address : {{$ans->address}}</p>
 	</div>

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 use App\Models\WasteRequest;
 use App\Models\Recycle;
-use Pdf;
 use Config;
 use Illuminate\Http\Request;
 
@@ -162,7 +161,8 @@ class CDController extends Controller
     
     public function exportPDF(Request $request)
     {
-        dd("In Working");
+        $pdf = \PDF::loadView('cd-collections.pdf', ['data' => 'Hello, World!']);
+        return $pdf->download('example.pdf');
     }
 
     /**

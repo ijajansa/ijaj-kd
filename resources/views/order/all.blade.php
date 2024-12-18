@@ -45,7 +45,7 @@
 										<td>{{$datas->address??'-'}}</td>
 										<td>
 											<?php $ans="Id :".$datas->id."\nName :".$datas->name."\nCategory :".$datas->category_id;?>
-											 {!! QrCode::size(80)->generate($ans) !!}
+											 {!! QrCode::encoding('UTF-8')->size(80)->generate($ans) !!}
 
 										</td>
 										<td>
